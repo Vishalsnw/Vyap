@@ -20,9 +20,9 @@ args = "Android Build Status"
 name = "Android Build Status"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "echo \"Android project structure created. Ready for Gradle build.\" && sleep infinity"
-
 [workflows.workflow.metadata]
 outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"Android app structure complete. Core modules for Customers and Products added.\" && sleep infinity"

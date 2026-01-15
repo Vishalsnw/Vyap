@@ -39,4 +39,21 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun productDao(): ProductDao
     abstract fun invoiceDao(): InvoiceDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: android.content.Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    AppDatabase::class.java,
+                    "invoice_pro_database"
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
 }
