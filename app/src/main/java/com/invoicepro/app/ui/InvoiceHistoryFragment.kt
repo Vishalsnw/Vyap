@@ -1,0 +1,74 @@
+package com.invoicepro.app.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.invoicepro.app.data.AppDatabase
+import com.invoicepro.app.databinding.FragmentInvoiceHistoryBinding
+import com.invoicepro.app.databinding.ItemInvoiceBinding
+import com.invoicepro.app.model.Invoice
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
+
+class InvoiceHistoryFragment : Fragment() {
+    private var _binding: FragmentInvoiceHistoryBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: InvoiceAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentInvoiceHistoryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        adapter = InvoiceAdapter()
+        binding.recyclerViewInvoices.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewInvoices.adapter = adapter
+
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(requireContext())
+            db.invoiceDao().getAllInvoices().collectLatest { invoices ->
+                adapter.submitList(invoices)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    class InvoiceAdapter : RecyclerView.Adapter<InvoiceAdapter.ViewHolder>() {
+        private var invoices = listOf<Invoice>()
+        private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+        fun submitList(newList: List<Invoice>) {
+            invoices = newList
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val binding = ItemInvoiceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ViewHolder(binding)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val invoice = invoices[position]
+            holder.binding.textInvoiceNum.text = invoice.invoiceNumber
+            holder.binding.textInvoiceTotal.text = "₹${invoice.total}"
+            holder.binding.textInvoiceDate.text = dateFormat.format(invoice.date)
+        }
+
+        override fun getItemCount() = invoices.size
+
+        class ViewHolder(val binding: ItemInvoiceBinding) : RecyclerView.ViewHolder(binding.root)
+    }
+}
