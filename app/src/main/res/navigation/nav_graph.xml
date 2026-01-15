@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.invoicepro.app.ui.DashboardFragment"
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/invoiceHistoryFragment"
+        android:name="com.invoicepro.app.ui.InvoiceHistoryFragment"
+        android:label="Invoices"
+        tools:layout="@layout/fragment_invoice_history" />
+
+    <fragment
+        android:id="@+id/productFragment"
+        android:name="com.invoicepro.app.ui.ProductFragment"
+        android:label="Products"
+        tools:layout="@layout/fragment_product" />
+
+    <fragment
+        android:id="@+id/customerFragment"
+        android:name="com.invoicepro.app.ui.CustomerFragment"
+        android:label="Customers"
+        tools:layout="@layout/fragment_customer" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.invoicepro.app.ui.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

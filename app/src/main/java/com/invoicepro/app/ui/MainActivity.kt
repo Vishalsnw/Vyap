@@ -2,6 +2,9 @@ package com.invoicepro.app.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.invoicepro.app.R
 import com.invoicepro.app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +15,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
-        // Basic Navigation Setup Placeholder
-        binding.textViewHello.text = "Welcome to InvoicePro Dashboard"
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        
+        binding.bottomNavigation.setupWithNavController(navController)
     }
 }
