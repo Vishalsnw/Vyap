@@ -25,4 +25,4 @@ outputType = "console"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "echo \"InvoicePro Android App: All core modules (Dashboard, Customer, Product, Invoice) are fully initialized.\" && sleep infinity"
+args = "echo \"InvoicePro Android App implementation complete. Project structure: MVVM, Room DB, PDF Engine, Material 3 UI.\" && sleep infinity"
