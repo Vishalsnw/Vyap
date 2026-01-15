@@ -29,6 +29,6 @@ InvoicePro is a production-ready Android application for GST billing automation,
 - **2026-01-15**: 
     - Initialized core project structure and Gradle configs.
     - Implemented Room entities and Database layer with Singleton pattern.
-    - Added `DashboardFragment`, `CustomerFragment`, `ProductFragment`, `CreateInvoiceFragment`, and `InvoiceHistoryFragment`.
+    - Added `DashboardFragment`, `CustomerFragment`, `ProductFragment`, `CreateInvoiceFragment`, `InvoiceHistoryFragment`, and `SettingsFragment`.
     - Implemented `PdfGenerator` utility.
     - Configured Material 3 themes and Android Manifest.
