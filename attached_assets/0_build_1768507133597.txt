@@ -1,0 +1,307 @@
+﻿2026-01-15T19:53:18.3395561Z Current runner version: '2.331.0'
+2026-01-15T19:53:18.3419013Z ##[group]Runner Image Provisioner
+2026-01-15T19:53:18.3419815Z Hosted Compute Agent
+2026-01-15T19:53:18.3420439Z Version: 20251211.462
+2026-01-15T19:53:18.3421062Z Commit: 6cbad8c2bb55d58165063d031ccabf57e2d2db61
+2026-01-15T19:53:18.3421791Z Build Date: 2025-12-11T16:28:49Z
+2026-01-15T19:53:18.3422426Z Worker ID: {f1300cf2-c5db-4249-9ea0-5e617acde037}
+2026-01-15T19:53:18.3423247Z ##[endgroup]
+2026-01-15T19:53:18.3423787Z ##[group]Operating System
+2026-01-15T19:53:18.3424330Z Ubuntu
+2026-01-15T19:53:18.3424878Z 24.04.3
+2026-01-15T19:53:18.3425317Z LTS
+2026-01-15T19:53:18.3425770Z ##[endgroup]
+2026-01-15T19:53:18.3426340Z ##[group]Runner Image
+2026-01-15T19:53:18.3426919Z Image: ubuntu-24.04
+2026-01-15T19:53:18.3427644Z Version: 20260105.202.1
+2026-01-15T19:53:18.3428907Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260105.202/images/ubuntu/Ubuntu2404-Readme.md
+2026-01-15T19:53:18.3430510Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260105.202
+2026-01-15T19:53:18.3431618Z ##[endgroup]
+2026-01-15T19:53:18.3434413Z ##[group]GITHUB_TOKEN Permissions
+2026-01-15T19:53:18.3437102Z Actions: write
+2026-01-15T19:53:18.3437894Z ArtifactMetadata: write
+2026-01-15T19:53:18.3438454Z Attestations: write
+2026-01-15T19:53:18.3439047Z Checks: write
+2026-01-15T19:53:18.3439562Z Contents: write
+2026-01-15T19:53:18.3440048Z Deployments: write
+2026-01-15T19:53:18.3440670Z Discussions: write
+2026-01-15T19:53:18.3441212Z Issues: write
+2026-01-15T19:53:18.3441692Z Metadata: read
+2026-01-15T19:53:18.3442250Z Models: read
+2026-01-15T19:53:18.3442719Z Packages: write
+2026-01-15T19:53:18.3443275Z Pages: write
+2026-01-15T19:53:18.3443822Z PullRequests: write
+2026-01-15T19:53:18.3444483Z RepositoryProjects: write
+2026-01-15T19:53:18.3445149Z SecurityEvents: write
+2026-01-15T19:53:18.3445700Z Statuses: write
+2026-01-15T19:53:18.3446238Z ##[endgroup]
+2026-01-15T19:53:18.3448455Z Secret source: Actions
+2026-01-15T19:53:18.3449288Z Prepare workflow directory
+2026-01-15T19:53:18.3774800Z Prepare all required actions
+2026-01-15T19:53:18.3816366Z Getting action download info
+2026-01-15T19:53:18.8208405Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-01-15T19:53:18.9158719Z Download action repository 'actions/setup-java@v4' (SHA:c1e323688fd81a25caa38c78aa6df2d33d3e20d9)
+2026-01-15T19:53:19.5669133Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-01-15T19:53:19.8024073Z Complete job name: build
+2026-01-15T19:53:19.8809225Z ##[group]Run actions/checkout@v4
+2026-01-15T19:53:19.8810230Z with:
+2026-01-15T19:53:19.8810712Z   repository: Vishalsnw/Vyap
+2026-01-15T19:53:19.8811478Z   token: ***
+2026-01-15T19:53:19.8811937Z   ssh-strict: true
+2026-01-15T19:53:19.8812407Z   ssh-user: git
+2026-01-15T19:53:19.8812884Z   persist-credentials: true
+2026-01-15T19:53:19.8813409Z   clean: true
+2026-01-15T19:53:19.8813889Z   sparse-checkout-cone-mode: true
+2026-01-15T19:53:19.8814493Z   fetch-depth: 1
+2026-01-15T19:53:19.8814963Z   fetch-tags: false
+2026-01-15T19:53:19.8815445Z   show-progress: true
+2026-01-15T19:53:19.8815926Z   lfs: false
+2026-01-15T19:53:19.8816373Z   submodules: false
+2026-01-15T19:53:19.8816853Z   set-safe-directory: true
+2026-01-15T19:53:19.8817780Z ##[endgroup]
+2026-01-15T19:53:19.9893077Z Syncing repository: Vishalsnw/Vyap
+2026-01-15T19:53:19.9895030Z ##[group]Getting Git version info
+2026-01-15T19:53:19.9895809Z Working directory is '/home/runner/work/Vyap/Vyap'
+2026-01-15T19:53:19.9897018Z [command]/usr/bin/git version
+2026-01-15T19:53:19.9954121Z git version 2.52.0
+2026-01-15T19:53:19.9980418Z ##[endgroup]
+2026-01-15T19:53:20.0001882Z Temporarily overriding HOME='/home/runner/work/_temp/fb8e63e7-4177-4420-b733-07c11cde4c4e' before making global git config changes
+2026-01-15T19:53:20.0006836Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-15T19:53:20.0008468Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Vyap/Vyap
+2026-01-15T19:53:20.0048094Z Deleting the contents of '/home/runner/work/Vyap/Vyap'
+2026-01-15T19:53:20.0051821Z ##[group]Initializing the repository
+2026-01-15T19:53:20.0055443Z [command]/usr/bin/git init /home/runner/work/Vyap/Vyap
+2026-01-15T19:53:20.0150258Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-01-15T19:53:20.0152110Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-01-15T19:53:20.0153849Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-01-15T19:53:20.0155269Z hint: call:
+2026-01-15T19:53:20.0155942Z hint:
+2026-01-15T19:53:20.0156808Z hint: 	git config --global init.defaultBranch <name>
+2026-01-15T19:53:20.0157823Z hint:
+2026-01-15T19:53:20.0158500Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-01-15T19:53:20.0160169Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-01-15T19:53:20.0161604Z hint:
+2026-01-15T19:53:20.0162306Z hint: 	git branch -m <name>
+2026-01-15T19:53:20.0163139Z hint:
+2026-01-15T19:53:20.0164097Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-01-15T19:53:20.0165918Z Initialized empty Git repository in /home/runner/work/Vyap/Vyap/.git/
+2026-01-15T19:53:20.0168668Z [command]/usr/bin/git remote add origin https://github.com/Vishalsnw/Vyap
+2026-01-15T19:53:20.0203336Z ##[endgroup]
+2026-01-15T19:53:20.0204306Z ##[group]Disabling automatic garbage collection
+2026-01-15T19:53:20.0205086Z [command]/usr/bin/git config --local gc.auto 0
+2026-01-15T19:53:20.0230398Z ##[endgroup]
+2026-01-15T19:53:20.0231190Z ##[group]Setting up auth
+2026-01-15T19:53:20.0236812Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-01-15T19:53:20.0265967Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-01-15T19:53:20.0586542Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-01-15T19:53:20.0619729Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-01-15T19:53:20.0846480Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-15T19:53:20.0888420Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-01-15T19:53:20.1110285Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-01-15T19:53:20.1145171Z ##[endgroup]
+2026-01-15T19:53:20.1146707Z ##[group]Fetching the repository
+2026-01-15T19:53:20.1155767Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ab12270d460df81392a82bf630031e2d61c79796:refs/remotes/origin/main
+2026-01-15T19:53:20.4997899Z From https://github.com/Vishalsnw/Vyap
+2026-01-15T19:53:20.4999242Z  * [new ref]         ab12270d460df81392a82bf630031e2d61c79796 -> origin/main
+2026-01-15T19:53:20.5035315Z ##[endgroup]
+2026-01-15T19:53:20.5037184Z ##[group]Determining the checkout info
+2026-01-15T19:53:20.5039480Z ##[endgroup]
+2026-01-15T19:53:20.5043444Z [command]/usr/bin/git sparse-checkout disable
+2026-01-15T19:53:20.5083497Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-01-15T19:53:20.5110147Z ##[group]Checking out the ref
+2026-01-15T19:53:20.5114151Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-01-15T19:53:20.5225684Z Switched to a new branch 'main'
+2026-01-15T19:53:20.5227990Z branch 'main' set up to track 'origin/main'.
+2026-01-15T19:53:20.5235682Z ##[endgroup]
+2026-01-15T19:53:20.5269103Z [command]/usr/bin/git log -1 --format=%H
+2026-01-15T19:53:20.5291367Z ab12270d460df81392a82bf630031e2d61c79796
+2026-01-15T19:53:20.5714770Z ##[group]Run actions/setup-java@v4
+2026-01-15T19:53:20.5715846Z with:
+2026-01-15T19:53:20.5716562Z   java-version: 17
+2026-01-15T19:53:20.5717573Z   distribution: temurin
+2026-01-15T19:53:20.5718442Z   cache: gradle
+2026-01-15T19:53:20.5719215Z   java-package: jdk
+2026-01-15T19:53:20.5720038Z   check-latest: false
+2026-01-15T19:53:20.5720888Z   server-id: github
+2026-01-15T19:53:20.5721728Z   server-username: GITHUB_ACTOR
+2026-01-15T19:53:20.5722721Z   server-password: GITHUB_TOKEN
+2026-01-15T19:53:20.5723705Z   overwrite-settings: true
+2026-01-15T19:53:20.5724604Z   job-status: success
+2026-01-15T19:53:20.5725714Z   token: ***
+2026-01-15T19:53:20.5726414Z ##[endgroup]
+2026-01-15T19:53:20.7732447Z ##[group]Installed distributions
+2026-01-15T19:53:20.7927932Z Resolved Java 17.0.17+10 from tool-cache
+2026-01-15T19:53:20.7929304Z Setting Java 17.0.17+10 as the default
+2026-01-15T19:53:20.7941830Z Creating toolchains.xml for JDK version 17 from temurin
+2026-01-15T19:53:20.8017901Z Writing to /home/runner/.m2/toolchains.xml
+2026-01-15T19:53:20.8018755Z 
+2026-01-15T19:53:20.8019101Z Java configuration:
+2026-01-15T19:53:20.8020329Z   Distribution: temurin
+2026-01-15T19:53:20.8021365Z   Version: 17.0.17+10
+2026-01-15T19:53:20.8022833Z   Path: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:53:20.8023983Z 
+2026-01-15T19:53:20.8024849Z ##[endgroup]
+2026-01-15T19:53:20.8041544Z Creating settings.xml with server-id: github
+2026-01-15T19:53:20.8043115Z Writing to /home/runner/.m2/settings.xml
+2026-01-15T19:53:21.2003138Z gradle cache is not found
+2026-01-15T19:53:21.2172357Z ##[group]Run mkdir -p gradle/wrapper
+2026-01-15T19:53:21.2173620Z [36;1mmkdir -p gradle/wrapper[0m
+2026-01-15T19:53:21.2175591Z [36;1mcurl -sL https://services.gradle.org/distributions/gradle-8.4-all.zip -o /tmp/gradle-8.4.zip[0m
+2026-01-15T19:53:21.2177918Z [36;1munzip -n -q /tmp/gradle-8.4.zip -d /tmp/[0m
+2026-01-15T19:53:21.2179325Z [36;1mexport PATH="/tmp/gradle-8.4/bin:$PATH"[0m
+2026-01-15T19:53:21.2180835Z [36;1mecho "PATH=/tmp/gradle-8.4/bin:$PATH" >> $GITHUB_ENV[0m
+2026-01-15T19:53:21.2182240Z [36;1mgradle --version[0m
+2026-01-15T19:53:21.2223257Z shell: /usr/bin/bash -e {0}
+2026-01-15T19:53:21.2224273Z env:
+2026-01-15T19:53:21.2225496Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:53:21.2227774Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:53:21.2229396Z ##[endgroup]
+2026-01-15T19:53:27.9956267Z 
+2026-01-15T19:53:27.9959403Z Welcome to Gradle 8.4!
+2026-01-15T19:53:27.9960223Z 
+2026-01-15T19:53:27.9960697Z Here are the highlights of this release:
+2026-01-15T19:53:27.9961698Z  - Compiling and testing with Java 21
+2026-01-15T19:53:27.9964202Z  - Faster Java compilation on Windows
+2026-01-15T19:53:27.9965477Z  - Role focused dependency configurations creation
+2026-01-15T19:53:27.9970712Z 
+2026-01-15T19:53:27.9971283Z For more details see https://docs.gradle.org/8.4/release-notes.html
+2026-01-15T19:53:27.9971807Z 
+2026-01-15T19:53:27.9971867Z 
+2026-01-15T19:53:27.9972107Z ------------------------------------------------------------
+2026-01-15T19:53:27.9972862Z Gradle 8.4
+2026-01-15T19:53:27.9976077Z ------------------------------------------------------------
+2026-01-15T19:53:27.9977043Z 
+2026-01-15T19:53:27.9978443Z Build time:   2023-10-04 20:52:13 UTC
+2026-01-15T19:53:27.9980640Z Revision:     e9251e572c9bd1d01e503a0dfdf43aedaeecdc3f
+2026-01-15T19:53:28.0013222Z 
+2026-01-15T19:53:28.0014203Z Kotlin:       1.9.10
+2026-01-15T19:53:28.0016003Z Groovy:       3.0.17
+2026-01-15T19:53:28.0017152Z Ant:          Apache Ant(TM) version 1.10.13 compiled on January 4 2023
+2026-01-15T19:53:28.0020487Z JVM:          17.0.17 (Eclipse Adoptium 17.0.17+10)
+2026-01-15T19:53:28.0023017Z OS:           Linux 6.11.0-1018-azure amd64
+2026-01-15T19:53:28.0023383Z 
+2026-01-15T19:53:28.0179983Z ##[group]Run mkdir -p ~/.android
+2026-01-15T19:53:28.0180532Z [36;1mmkdir -p ~/.android[0m
+2026-01-15T19:53:28.0180921Z [36;1mecho "KEYSTORE_PASSWORD=InvoicePro@2026#SecureKey" > keystore.properties[0m
+2026-01-15T19:53:28.0181442Z [36;1mecho "KEY_PASSWORD=InvoicePro@2026#SecureKey" >> keystore.properties[0m
+2026-01-15T19:53:28.0181904Z [36;1mecho "KEY_ALIAS=invoicepro_key" >> keystore.properties[0m
+2026-01-15T19:53:28.0182278Z [36;1mkeytool -genkey -v \[0m
+2026-01-15T19:53:28.0182578Z [36;1m  -keystore ~/.android/invoicepro_release.keystore \[0m
+2026-01-15T19:53:28.0182922Z [36;1m  -keyalg RSA -keysize 2048 \[0m
+2026-01-15T19:53:28.0183176Z [36;1m  -validity 10000 \[0m
+2026-01-15T19:53:28.0183410Z [36;1m  -alias invoicepro_key \[0m
+2026-01-15T19:53:28.0183737Z [36;1m  -dname "CN=InvoicePro,O=InvoicePro Inc,L=India,C=IN" \[0m
+2026-01-15T19:53:28.0184098Z [36;1m  -storepass InvoicePro@2026#SecureKey \[0m
+2026-01-15T19:53:28.0184427Z [36;1m  -keypass InvoicePro@2026#SecureKey[0m
+2026-01-15T19:53:28.0217015Z shell: /usr/bin/bash -e {0}
+2026-01-15T19:53:28.0217294Z env:
+2026-01-15T19:53:28.0217744Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:53:28.0218229Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:53:28.0219689Z   PATH: /tmp/gradle-8.4/bin:/tmp/gradle-8.4/bin:/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+2026-01-15T19:53:28.0221015Z ##[endgroup]
+2026-01-15T19:53:29.1379086Z Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 10,000 days
+2026-01-15T19:53:29.1380442Z 	for: CN=InvoicePro, O=InvoicePro Inc, L=India, C=IN
+2026-01-15T19:53:29.3717138Z [Storing /home/runner/.android/invoicepro_release.keystore]
+2026-01-15T19:53:29.5100321Z ##[group]Run gradle assembleRelease \
+2026-01-15T19:53:29.5100670Z [36;1mgradle assembleRelease \[0m
+2026-01-15T19:53:29.5101127Z [36;1m  -Pandroid.injected.signing.store.file=$HOME/.android/invoicepro_release.keystore \[0m
+2026-01-15T19:53:29.5101919Z [36;1m  -Pandroid.injected.signing.store.*** \[0m
+2026-01-15T19:53:29.5102317Z [36;1m  -Pandroid.injected.signing.key.alias=invoicepro_key \[0m
+2026-01-15T19:53:29.5102837Z [36;1m  -Pandroid.injected.signing.key.***
+2026-01-15T19:53:29.5135538Z shell: /usr/bin/bash -e {0}
+2026-01-15T19:53:29.5135778Z env:
+2026-01-15T19:53:29.5136069Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:53:29.5136572Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:53:29.5138234Z   PATH: /tmp/gradle-8.4/bin:/tmp/gradle-8.4/bin:/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+2026-01-15T19:53:29.5139577Z ##[endgroup]
+2026-01-15T19:53:30.2763052Z Starting a Gradle Daemon (subsequent builds will be faster)
+2026-01-15T19:55:11.6829201Z > Task :app:buildKotlinToolingMetadata
+2026-01-15T19:55:11.6829807Z > Task :app:preBuild UP-TO-DATE
+2026-01-15T19:55:11.6830258Z > Task :app:preReleaseBuild UP-TO-DATE
+2026-01-15T19:55:41.6757702Z > Task :app:dataBindingMergeDependencyArtifactsRelease
+2026-01-15T19:56:02.3763941Z > Task :app:generateReleaseResValues
+2026-01-15T19:56:04.8757196Z > Task :app:generateReleaseResources
+2026-01-15T19:56:04.8757979Z > Task :app:packageReleaseResources
+2026-01-15T19:56:05.1757786Z > Task :app:mergeReleaseResources
+2026-01-15T19:56:06.3759816Z > Task :app:parseReleaseLocalResources
+2026-01-15T19:56:06.3761670Z > Task :app:mapReleaseSourceSetPaths
+2026-01-15T19:56:06.3763496Z > Task :app:checkReleaseAarMetadata
+2026-01-15T19:56:06.6759336Z > Task :app:dataBindingGenBaseClassesRelease
+2026-01-15T19:56:06.6759974Z > Task :app:createReleaseCompatibleScreenManifests
+2026-01-15T19:56:06.6799145Z > Task :app:extractDeepLinksRelease
+2026-01-15T19:56:06.9760029Z > Task :app:processReleaseMainManifest
+2026-01-15T19:56:07.0757909Z > Task :app:processReleaseManifest
+2026-01-15T19:56:14.6760284Z > Task :app:extractProguardFiles
+2026-01-15T19:56:14.6760976Z > Task :app:javaPreCompileRelease
+2026-01-15T19:56:14.6768028Z > Task :app:mergeReleaseJniLibFolders
+2026-01-15T19:56:16.1758671Z > Task :app:mergeReleaseNativeLibs NO-SOURCE
+2026-01-15T19:56:16.1768242Z > Task :app:stripReleaseDebugSymbols NO-SOURCE
+2026-01-15T19:56:16.1774008Z > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
+2026-01-15T19:56:16.2764273Z > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+2026-01-15T19:56:16.5757015Z > Task :app:desugarReleaseFileDependencies
+2026-01-15T19:56:16.6774090Z > Task :app:checkReleaseDuplicateClasses
+2026-01-15T19:56:16.6782370Z > Task :app:mergeReleaseArtProfile
+2026-01-15T19:56:37.0760322Z > Task :app:processReleaseManifestForPackage
+2026-01-15T19:56:40.3799830Z > Task :app:mergeReleaseShaders
+2026-01-15T19:56:42.2759408Z > Task :app:compileReleaseShaders NO-SOURCE
+2026-01-15T19:56:42.2762195Z > Task :app:generateReleaseAssets UP-TO-DATE
+2026-01-15T19:56:42.4759103Z > Task :app:mergeReleaseAssets
+2026-01-15T19:56:42.5756909Z > Task :app:compressReleaseAssets
+2026-01-15T19:56:42.5762451Z > Task :app:collectReleaseDependencies
+2026-01-15T19:56:42.7756589Z > Task :app:sdkReleaseDependencyData
+2026-01-15T19:56:42.7757563Z > Task :app:validateSigningRelease
+2026-01-15T19:56:42.7758390Z > Task :app:writeReleaseAppMetadata
+2026-01-15T19:56:42.7759171Z > Task :app:writeReleaseSigningConfigVersions
+2026-01-15T19:56:42.8771090Z > Task :app:processReleaseResources FAILED
+2026-01-15T19:56:43.6756498Z > Task :app:mergeExtDexRelease
+2026-01-15T19:56:43.7769909Z 
+2026-01-15T19:56:43.7771178Z FAILURE: Build failed with an exception.
+2026-01-15T19:56:43.7771903Z 
+2026-01-15T19:56:43.7772208Z * What went wrong:
+2026-01-15T19:56:43.7772861Z Execution failed for task ':app:processReleaseResources'.
+2026-01-15T19:56:43.7774227Z > A failure occurred while executing com.android.build.gradle.internal.res.LinkApplicationAndroidResourcesTask$TaskAction
+2026-01-15T19:56:43.7775510Z    > Android resource linking failed
+2026-01-15T19:56:43.7776991Z      ERROR: /home/runner/work/Vyap/Vyap/app/src/main/AndroidManifest.xml:3:5-18:19: AAPT: error: resource mipmap/ic_launcher (aka com.invoicepro.app:mipmap/ic_launcher) not found.
+2026-01-15T19:56:43.7778648Z          
+2026-01-15T19:56:43.7779848Z      ERROR: /home/runner/work/Vyap/Vyap/app/src/main/AndroidManifest.xml:3:5-18:19: AAPT: error: resource mipmap/ic_launcher_round (aka com.invoicepro.app:mipmap/ic_launcher_round) not found.
+2026-01-15T19:56:43.7781136Z          
+2026-01-15T19:56:43.7781286Z 
+2026-01-15T19:56:43.7781399Z * Try:
+2026-01-15T19:56:43.7781767Z > Run with --stacktrace option to get the stack trace.
+2026-01-15T19:56:43.7782379Z > Run with --info or --debug option to get more log output.
+2026-01-15T19:56:43.7782900Z > Run with --scan to get full insights.
+2026-01-15T19:56:43.7783377Z > Get more help at https://help.gradle.org.
+2026-01-15T19:56:43.7783700Z 
+2026-01-15T19:56:43.7783825Z BUILD FAILED in 3m 14s
+2026-01-15T19:56:43.7809394Z 30 actionable tasks: 30 executed
+2026-01-15T19:56:44.1725672Z ##[error]Process completed with exit code 1.
+2026-01-15T19:56:44.1789648Z ##[group]Run echo "❌ Build Failed!"
+2026-01-15T19:56:44.1789950Z [36;1mecho "❌ Build Failed!"[0m
+2026-01-15T19:56:44.1790221Z [36;1mecho "Check the logs above for details."[0m
+2026-01-15T19:56:44.1790493Z [36;1mexit 1[0m
+2026-01-15T19:56:44.1822077Z shell: /usr/bin/bash -e {0}
+2026-01-15T19:56:44.1822307Z env:
+2026-01-15T19:56:44.1822612Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:56:44.1823094Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64
+2026-01-15T19:56:44.1824700Z   PATH: /tmp/gradle-8.4/bin:/tmp/gradle-8.4/bin:/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.17-10/x64/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+2026-01-15T19:56:44.1826001Z ##[endgroup]
+2026-01-15T19:56:44.1875804Z ❌ Build Failed!
+2026-01-15T19:56:44.1876237Z Check the logs above for details.
+2026-01-15T19:56:44.1880240Z ##[error]Process completed with exit code 1.
+2026-01-15T19:56:44.1963662Z Post job cleanup.
+2026-01-15T19:56:44.3702160Z Post job cleanup.
+2026-01-15T19:56:44.4632482Z [command]/usr/bin/git version
+2026-01-15T19:56:44.4673218Z git version 2.52.0
+2026-01-15T19:56:44.4719136Z Temporarily overriding HOME='/home/runner/work/_temp/b937536c-8d81-449e-ab8c-b602c431d5a7' before making global git config changes
+2026-01-15T19:56:44.4720472Z Adding repository directory to the temporary git global config as a safe directory
+2026-01-15T19:56:44.4724473Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Vyap/Vyap
+2026-01-15T19:56:44.4767992Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-01-15T19:56:44.4801433Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-01-15T19:56:44.5048200Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-01-15T19:56:44.5070798Z http.https://github.com/.extraheader
+2026-01-15T19:56:44.5083416Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-01-15T19:56:44.5116476Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-01-15T19:56:44.5355594Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-01-15T19:56:44.5387793Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-01-15T19:56:44.5742180Z Cleaning up orphan processes
+2026-01-15T19:56:44.6048464Z Terminate orphan process: pid (2219) (java)
