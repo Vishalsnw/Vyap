@@ -1,0 +1,28 @@
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Android Build Status"
+
+[[workflows.workflow]]
+name = "Android Build Status"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"Android project structure created. Ready for Gradle build.\" && sleep infinity"
+
+[workflows.workflow.metadata]
+outputType = "console"
