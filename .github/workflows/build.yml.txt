@@ -1,0 +1,140 @@
+name: Build Release APK and AAB
+
+on:
+  push:
+    branches:
+      - main
+      - release
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Setup Gradle 8.4
+        run: |
+          mkdir -p gradle/wrapper
+          curl -sL https://services.gradle.org/distributions/gradle-8.4-all.zip -o /tmp/gradle-8.4.zip
+          unzip -n -q /tmp/gradle-8.4.zip -d /tmp/
+          export PATH="/tmp/gradle-8.4/bin:$PATH"
+          echo "PATH=/tmp/gradle-8.4/bin:$PATH" >> $GITHUB_ENV
+          gradle --version
+
+      - name: Create Keystore
+        run: |
+          mkdir -p ~/.android
+          echo "KEYSTORE_PASSWORD=GoalGuru@2024#SecureKey" > keystore.properties
+          echo "KEY_PASSWORD=GoalGuru@2024#SecureKey" >> keystore.properties
+          echo "KEY_ALIAS=goalguru_key" >> keystore.properties
+          keytool -genkey -v \
+            -keystore ~/.android/goalguru_release.keystore \
+            -keyalg RSA -keysize 2048 \
+            -validity 10000 \
+            -alias goalguru_key \
+            -dname "CN=GoalGuru,O=GoalGuru Inc,L=India,C=IN" \
+            -storepass GoalGuru@2024#SecureKey \
+            -keypass GoalGuru@2024#SecureKey
+
+      - name: Build Release APK
+        run: |
+          /tmp/gradle-8.4/bin/gradle assembleRelease \
+            -PDEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }} \
+            -Pandroid.injected.signing.store.file=$HOME/.android/goalguru_release.keystore \
+            -Pandroid.injected.signing.store.password=GoalGuru@2024#SecureKey \
+            -Pandroid.injected.signing.key.alias=goalguru_key \
+            -Pandroid.injected.signing.key.password=GoalGuru@2024#SecureKey
+
+      - name: Build Release AAB
+        run: |
+          /tmp/gradle-8.4/bin/gradle bundleRelease \
+            -PDEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }} \
+            -Pandroid.injected.signing.store.file=$HOME/.android/goalguru_release.keystore \
+            -Pandroid.injected.signing.store.password=GoalGuru@2024#SecureKey \
+            -Pandroid.injected.signing.key.alias=goalguru_key \
+            -Pandroid.injected.signing.key.password=GoalGuru@2024#SecureKey
+
+      - name: List Build Outputs
+        run: |
+          echo "=== Release APK ==="
+          ls -lh app/build/outputs/apk/release/
+          echo ""
+          echo "=== Release AAB ==="
+          ls -lh app/build/outputs/bundle/release/
+
+      - name: Upload APK to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: goalguru-release-apk
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: Upload AAB to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: goalguru-release-aab
+          path: app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+
+      - name: Create Release Notes
+        run: |
+          echo "# GoalGuru Release Build" > release_notes.md
+          echo "" >> release_notes.md
+          echo "Build Date: $(date)" >> release_notes.md
+          echo "Commit: ${{ github.sha }}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "## Artifacts" >> release_notes.md
+          echo "- **APK**: app/build/outputs/apk/release/app-release.apk" >> release_notes.md
+          echo "- **AAB**: app/build/outputs/bundle/release/app-release.aab" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "## Installation" >> release_notes.md
+          echo "### APK Installation" >> release_notes.md
+          echo "\`\`\`bash" >> release_notes.md
+          echo "adb install app-release.apk" >> release_notes.md
+          echo "\`\`\`" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### AAB Installation" >> release_notes.md
+          echo "Upload to Google Play Console for distribution" >> release_notes.md
+
+      - name: Upload Release Notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release_notes.md
+          retention-days: 30
+
+      - name: Build Summary
+        run: |
+          echo "✅ Build Complete!"
+          echo ""
+          echo "📦 Artifacts:"
+          echo "  - APK: app/build/outputs/apk/release/app-release.apk"
+          echo "  - AAB: app/build/outputs/bundle/release/app-release.aab"
+          echo ""
+          echo "📱 Package: com.goalguru.goalguru"
+          echo "🔑 Signed: Yes (Release Key)"
+          echo "🎯 Min SDK: 24"
+          echo "📊 Target SDK: 34"
+
+      - name: Check for Build Errors
+        if: failure()
+        run: |
+          echo "❌ Build Failed!"
+          echo "Check the logs above for details."
+          exit 1
