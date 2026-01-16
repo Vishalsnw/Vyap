@@ -30,11 +30,17 @@ class CustomerFragment : Fragment() {
             val gstin = binding.editGstin.text.toString()
 
             if (name.isNotEmpty() && phone.isNotEmpty()) {
-                val customer = Customer(name = name, phone = phone, address = address, gstin = gstin)
+                val customer = Customer(name = name, phone = phone, address = address, gstin = gstin.ifEmpty { null })
                 lifecycleScope.launch {
                     val db = AppDatabase.getDatabase(requireContext())
                     db.customerDao().insertCustomer(customer)
-                    // In a real app, you'd navigate back or show a success message
+                    
+                    // Clear inputs and show success
+                    binding.editName.setText("")
+                    binding.editPhone.setText("")
+                    binding.editAddress.setText("")
+                    binding.editGstin.setText("")
+                    android.widget.Toast.makeText(requireContext(), "Customer Saved!", android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
         }

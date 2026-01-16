@@ -37,6 +37,11 @@ class ProductFragment : Fragment() {
                 lifecycleScope.launch {
                     val db = AppDatabase.getDatabase(requireContext())
                     db.productDao().insertProduct(product)
+                    
+                    // Clear inputs and show success
+                    binding.editProductName.setText("")
+                    binding.editProductPrice.setText("")
+                    android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
         }
