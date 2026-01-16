@@ -133,8 +133,9 @@ class InvoiceHistoryFragment : Fragment() {
             holder.binding.textInvoiceDate.text = dateFormat.format(invoice.date)
             
             holder.binding.root.setOnClickListener {
-                (holder.itemView.context as? androidx.appcompat.app.AppCompatActivity)?.let { activity ->
-                    lifecycleScope.launch {
+                val context = holder.itemView.context
+                (context as? androidx.appcompat.app.AppCompatActivity)?.let { activity ->
+                    (context as? androidx.lifecycle.LifecycleOwner)?.lifecycleScope?.launch {
                         val db = AppDatabase.getDatabase(activity)
                         val business = db.businessProfileDao().getProfile() ?: BusinessProfile(name = "Business Name", address = "", phone = "", gstin = "")
                         val customer = db.customerDao().getAllCustomers().first().find { it.id == invoice.customerId } ?: return@launch
