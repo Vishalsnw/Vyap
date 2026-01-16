@@ -11,6 +11,9 @@ import com.invoicepro.app.databinding.FragmentDashboardBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+import androidx.navigation.fragment.findNavController
+import com.invoicepro.app.R
+
 class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
@@ -23,6 +26,17 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeStats()
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        binding.buttonSale.setOnClickListener {
+            findNavController().navigate(R.id.action_dashboardFragment_to_createInvoiceFragment)
+        }
+        
+        binding.buttonPurchase.setOnClickListener {
+            findNavController().navigate(R.id.productFragment)
+        }
     }
 
     private fun observeStats() {

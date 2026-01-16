@@ -9,7 +9,17 @@
         android:id="@+id/dashboardFragment"
         android:name="com.invoicepro.app.ui.DashboardFragment"
         android:label="Dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_dashboardFragment_to_createInvoiceFragment"
+            app:destination="@id/createInvoiceFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createInvoiceFragment"
+        android:name="com.invoicepro.app.ui.CreateInvoiceFragment"
+        android:label="Create Invoice"
+        tools:layout="@layout/fragment_create_invoice" />
 
     <fragment
         android:id="@+id/invoiceHistoryFragment"
