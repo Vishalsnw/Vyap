@@ -31,10 +31,17 @@ interface InvoiceDao {
     fun getAllInvoices(): Flow<List<Invoice>>
     
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertInvoice(invoice: Invoice)
+    suspend fun insertInvoice(invoice: Invoice): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertInvoiceItems(items: List<InvoiceItem>)
+
+    @Transaction
+    @Query("SELECT * FROM invoice_items WHERE invoiceId = :invoiceId")
+    suspend fun getItemsForInvoice(invoiceId: Long): List<InvoiceItem>
 }
 
-@Database(entities = [Customer::class, Product::class, Invoice::class], version = 1)
+@Database(entities = [Customer::class, Product::class, Invoice::class, InvoiceItem::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun productDao(): ProductDao

@@ -27,6 +27,30 @@
             android:inputType="numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Current Stock">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editProductStock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Unit (e.g. pcs, kg)">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editProductUnit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="pcs" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

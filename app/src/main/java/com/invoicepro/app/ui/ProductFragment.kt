@@ -26,13 +26,17 @@ class ProductFragment : Fragment() {
         binding.btnSaveProduct.setOnClickListener {
             val name = binding.editProductName.text.toString()
             val priceStr = binding.editProductPrice.text.toString()
+            val stockStr = binding.editProductStock.text.toString()
+            val unit = binding.editProductUnit.text.toString()
             val gstStr = binding.spinnerGst.selectedItem.toString().replace("%", "")
 
             if (name.isNotEmpty() && priceStr.isNotEmpty()) {
                 val product = Product(
                     name = name,
                     price = priceStr.toDoubleOrNull() ?: 0.0,
-                    gstPercentage = gstStr.toIntOrNull() ?: 0
+                    gstPercentage = gstStr.toIntOrNull() ?: 0,
+                    stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
+                    unit = unit.ifEmpty { "pcs" }
                 )
                 lifecycleScope.launch {
                     val db = AppDatabase.getDatabase(requireContext())

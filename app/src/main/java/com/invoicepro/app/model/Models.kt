@@ -17,7 +17,21 @@ data class Product(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val price: Double,
-    val gstPercentage: Int // 0, 5, 12, 18, 28
+    val gstPercentage: Int, // 0, 5, 12, 18, 28
+    val stockQuantity: Double = 0.0,
+    val unit: String = "pcs" // pcs, kg, mtr, etc.
+)
+
+@Entity(tableName = "invoice_items")
+data class InvoiceItem(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val invoiceId: Long,
+    val productId: Long,
+    val productName: String,
+    val quantity: Double,
+    val rate: Double,
+    val gstPercentage: Int,
+    val amount: Double
 )
 
 @Entity(tableName = "invoices")
