@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.invoicepro.app.data.AppDatabase
 import com.invoicepro.app.databinding.FragmentDashboardBinding
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class DashboardFragment : Fragment() {
@@ -22,18 +22,28 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadStats()
+        observeStats()
     }
 
-    private fun loadStats() {
+    private fun observeStats() {
         lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
-            val invoices = db.invoiceDao().getAllInvoices().first()
-            val totalSales = invoices.sumOf { it.total }
             
-            binding.textTotalSales.text = "₹%.2f".format(totalSales)
-            binding.textReceivables.text = "₹%.2f".format(totalSales * 0.15) // Mock for now
-            binding.textStockValue.text = "₹0.00"
+            // Observe Invoices for real-time sales updates
+            db.invoiceDao().getAllInvoices().collectLatest { invoices ->
+                val totalSales = invoices.sumOf { it.total }
+                binding.textTotalSales.text = "₹%.2f".format(totalSales)
+                binding.textReceivables.text = "₹%.2f".format(totalSales * 0.0) // Placeholder
+            }
+        }
+
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(requireContext())
+            // Observe Products for real-time stock value updates
+            db.productDao().getAllProducts().collectLatest { products ->
+                val stockValue = products.sumOf { it.sellingPrice * it.stockQuantity }
+                binding.textStockValue.text = "₹%.2f".format(stockValue)
+            }
         }
     }
 
