@@ -1,6 +1,8 @@
 package com.invoicepro.app.ui
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +23,7 @@ class InvoiceHistoryFragment : Fragment() {
     private var _binding: FragmentInvoiceHistoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: InvoiceAdapter
+    private var allInvoices = listOf<Invoice>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentInvoiceHistoryBinding.inflate(inflater, container, false)
@@ -36,9 +39,27 @@ class InvoiceHistoryFragment : Fragment() {
         lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
             db.invoiceDao().getAllInvoices().collectLatest { invoices ->
-                adapter.submitList(invoices)
+                allInvoices = invoices
+                filterInvoices(binding.editSearchInvoices.text.toString())
             }
         }
+
+        binding.editSearchInvoices.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterInvoices(s.toString())
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun filterInvoices(query: String) {
+        val filtered = if (query.isEmpty()) {
+            allInvoices
+        } else {
+            allInvoices.filter { it.invoiceNumber.contains(query, ignoreCase = true) }
+        }
+        adapter.submitList(filtered)
     }
 
     override fun onDestroyView() {
@@ -63,7 +84,7 @@ class InvoiceHistoryFragment : Fragment() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val invoice = invoices[position]
             holder.binding.textInvoiceNum.text = invoice.invoiceNumber
-            holder.binding.textInvoiceTotal.text = "₹${invoice.total}"
+            holder.binding.textInvoiceTotal.text = "₹%.2f".format(invoice.total)
             holder.binding.textInvoiceDate.text = dateFormat.format(invoice.date)
         }
 
