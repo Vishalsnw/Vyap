@@ -14,7 +14,9 @@ import com.invoicepro.app.data.AppDatabase
 import com.invoicepro.app.databinding.FragmentInvoiceHistoryBinding
 import com.invoicepro.app.databinding.ItemInvoiceBinding
 import com.invoicepro.app.model.Invoice
-import kotlinx.coroutines.flow.collectLatest
+import com.invoicepro.app.model.BusinessProfile
+import com.invoicepro.app.util.PdfGenerator
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -86,6 +88,29 @@ class InvoiceHistoryFragment : Fragment() {
             holder.binding.textInvoiceNum.text = invoice.invoiceNumber
             holder.binding.textInvoiceTotal.text = "₹%.2f".format(invoice.total)
             holder.binding.textInvoiceDate.text = dateFormat.format(invoice.date)
+            
+            holder.binding.root.setOnClickListener {
+                (holder.itemView.context as? androidx.appcompat.app.AppCompatActivity)?.let { activity ->
+                    lifecycleScope.launch {
+                        val db = AppDatabase.getDatabase(activity)
+                        val business = db.businessProfileDao().getProfile() ?: BusinessProfile(name = "Business Name", address = "", phone = "", gstin = "")
+                        val customer = db.customerDao().getAllCustomers().first().find { it.id == invoice.customerId } ?: return@launch
+                        val items = db.invoiceDao().getItemsForInvoice(invoice.id)
+                        
+                        val pdfGenerator = PdfGenerator(activity)
+                        val file = pdfGenerator.generateInvoicePdf(business, customer, invoice, items)
+                        
+                        file?.let {
+                            val uri = androidx.core.content.FileProvider.getUriForFile(activity, "${activity.packageName}.provider", it)
+                            val intent = android.content.Intent(android.content.Intent.ACTION_VIEW).apply {
+                                setDataAndType(uri, "application/pdf")
+                                addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+                            activity.startActivity(android.content.Intent.createChooser(intent, "Open Invoice"))
+                        }
+                    }
+                }
+            }
         }
 
         override fun getItemCount() = invoices.size
