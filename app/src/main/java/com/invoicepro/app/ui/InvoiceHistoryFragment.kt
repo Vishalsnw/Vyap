@@ -67,34 +67,39 @@ class InvoiceHistoryFragment : Fragment() {
 
     private fun exportToCsv() {
         lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val invoices = db.invoiceDao().getAllInvoices().first()
-            if (invoices.isEmpty()) {
-                Toast.makeText(requireContext(), "No invoices to export", Toast.LENGTH_SHORT).show()
-                return@launch
-            }
+            try {
+                val db = AppDatabase.getDatabase(requireContext())
+                val invoices = db.invoiceDao().getAllInvoices().first()
+                if (invoices.isEmpty()) {
+                    Toast.makeText(requireContext(), "No invoices to export", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
 
-            val csvBuilder = StringBuilder("Invoice Number,Date,Customer,Total\n")
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            
-            val customers = db.customerDao().getAllCustomers().first()
-            
-            invoices.forEach { invoice ->
-                val customer = customers.find { it.id == invoice.customerId }
-                csvBuilder.append("${invoice.invoiceNumber},${dateFormat.format(invoice.date)},${customer?.name ?: "Unknown"},${invoice.total}\n")
+                val csvBuilder = StringBuilder("Invoice Number,Date,Customer,Subtotal,GST,Total\n")
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                
+                val customers = db.customerDao().getAllCustomers().first()
+                
+                invoices.forEach { invoice ->
+                    val customer = customers.find { it.id == invoice.customerId }
+                    val totalGst = invoice.cgst + invoice.sgst + invoice.igst
+                    csvBuilder.append("${invoice.invoiceNumber},${dateFormat.format(Date(invoice.date))},${customer?.name ?: "Unknown"},${invoice.subtotal},${totalGst},${invoice.total}\n")
+                }
+                
+                val fileName = "InvoicePro_Export_${System.currentTimeMillis()}.csv"
+                val file = File(requireContext().getExternalFilesDir(null), fileName)
+                file.writeText(csvBuilder.toString())
+                
+                val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/csv"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(Intent.createChooser(intent, "Export Invoices CSV"))
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Export failed: ${e.message}", Toast.LENGTH_LONG).show()
             }
-            
-            val fileName = "invoices_backup_${System.currentTimeMillis()}.csv"
-            val file = File(requireContext().getExternalFilesDir(null), fileName)
-            file.writeText(csvBuilder.toString())
-            
-            val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/csv"
-                putExtra(Intent.EXTRA_STREAM, uri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            startActivity(Intent.createChooser(intent, "Export Backup"))
         }
     }
 
