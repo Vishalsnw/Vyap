@@ -49,7 +49,7 @@ class ProductFragment : Fragment() {
             if (name.isNotEmpty() && priceStr.isNotEmpty()) {
                 val product = Product(
                     name = name,
-                    price = priceStr.toDoubleOrNull() ?: 0.0,
+                    sellingPrice = priceStr.toDoubleOrNull() ?: 0.0,
                     gstPercentage = gstStr.toIntOrNull() ?: 0,
                     stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
                     unit = unit.ifEmpty { "pcs" }

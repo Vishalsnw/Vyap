@@ -16,7 +16,7 @@ data class Customer(
 data class Product(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
-    val price: Double,
+    val sellingPrice: Double,
     val gstPercentage: Int, // 0, 5, 12, 18, 28
     val stockQuantity: Double = 0.0,
     val unit: String = "pcs" // pcs, kg, mtr, etc.
