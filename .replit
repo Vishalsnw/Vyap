@@ -1,4 +1,4 @@
-modules = ["web"]
+modules = ["web", "java-graalvm22.3"]
 [agent]
 expertMode = true
 
