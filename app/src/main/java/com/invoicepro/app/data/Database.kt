@@ -41,11 +41,21 @@ interface InvoiceDao {
     suspend fun getItemsForInvoice(invoiceId: Long): List<InvoiceItem>
 }
 
-@Database(entities = [Customer::class, Product::class, Invoice::class, InvoiceItem::class], version = 2, exportSchema = false)
+@Dao
+interface BusinessProfileDao {
+    @Query("SELECT * FROM business_profile WHERE id = 0")
+    suspend fun getProfile(): BusinessProfile?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertProfile(profile: BusinessProfile)
+}
+
+@Database(entities = [Customer::class, Product::class, Invoice::class, InvoiceItem::class, BusinessProfile::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun productDao(): ProductDao
     abstract fun invoiceDao(): InvoiceDao
+    abstract fun businessProfileDao(): BusinessProfileDao
 
     companion object {
         @Volatile

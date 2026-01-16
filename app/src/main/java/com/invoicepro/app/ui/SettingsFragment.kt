@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.invoicepro.app.data.AppDatabase
@@ -22,6 +23,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadProfile()
         
         binding.btnSaveProfile.setOnClickListener {
             val name = binding.editBizName.text.toString()
@@ -37,9 +39,25 @@ class SettingsFragment : Fragment() {
                     gstin = gstin
                 )
                 lifecycleScope.launch {
-                    // Save to DB or SharedPreferences
-                    // For now, placeholder for Business Profile management
+                    val db = AppDatabase.getDatabase(requireContext())
+                    db.businessProfileDao().insertProfile(profile)
+                    Toast.makeText(requireContext(), "Profile Saved!", Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(requireContext(), "Business Name is required", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun loadProfile() {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(requireContext())
+            val profile = db.businessProfileDao().getProfile()
+            profile?.let {
+                binding.editBizName.setText(it.name)
+                binding.editBizAddress.setText(it.address)
+                binding.editBizPhone.setText(it.phone)
+                binding.editBizGstin.setText(it.gstin)
             }
         }
     }
