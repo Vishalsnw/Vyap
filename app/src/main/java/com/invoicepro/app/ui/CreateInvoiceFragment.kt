@@ -139,12 +139,12 @@ class CreateInvoiceFragment : Fragment() {
 
     private fun saveInvoice() {
         val customer = selectedCustomer ?: run {
-            Toast.makeText(requireContext(), "Select a customer", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please select a customer first", Toast.LENGTH_LONG).show()
             return
         }
         
         if (selectedItems.isEmpty()) {
-            Toast.makeText(requireContext(), "Add at least one item", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please add at least one item to the invoice", Toast.LENGTH_LONG).show()
             return
         }
         
@@ -155,7 +155,7 @@ class CreateInvoiceFragment : Fragment() {
         val invoice = Invoice(
             invoiceNumber = "INV-${System.currentTimeMillis()}",
             customerId = customer.id,
-            date = Date().time,
+            date = System.currentTimeMillis(),
             subtotal = subtotal,
             cgst = totalGst / 2,
             sgst = totalGst / 2,
@@ -164,21 +164,27 @@ class CreateInvoiceFragment : Fragment() {
         )
 
         lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val invoiceId = db.invoiceDao().insertInvoice(invoice)
-            
-            val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
-            db.invoiceDao().insertInvoiceItems(finalItems)
-            
-            // Reduce stock for each product
-            finalItems.forEach { item ->
-                db.productDao().reduceStock(item.productId, item.quantity)
+            try {
+                val db = AppDatabase.getDatabase(requireContext())
+                val invoiceId = db.invoiceDao().insertInvoice(invoice)
+                
+                val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
+                db.invoiceDao().insertInvoiceItems(finalItems)
+                
+                finalItems.forEach { item ->
+                    db.productDao().reduceStock(item.productId, item.quantity)
+                }
+                
+                Toast.makeText(requireContext(), "Invoice ${invoice.invoiceNumber} saved successfully!", Toast.LENGTH_SHORT).show()
+                selectedItems.clear()
+                itemAdapter.notifyDataSetChanged()
+                updateUI()
+                
+                // Navigate back to history or clear view
+                parentFragmentManager.popBackStack()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
             }
-            
-            Toast.makeText(requireContext(), "Invoice Saved Successfully!", Toast.LENGTH_SHORT).show()
-            selectedItems.clear()
-            itemAdapter.notifyDataSetChanged()
-            updateUI()
         }
     }
 
