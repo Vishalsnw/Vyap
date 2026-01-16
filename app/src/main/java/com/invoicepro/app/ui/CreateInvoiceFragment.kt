@@ -77,7 +77,7 @@ class CreateInvoiceFragment : Fragment() {
             val dialog = Dialog(requireContext())
             dialog.setContentView(dialogBinding.root)
             
-            val productNames = products.map { "${it.name} (₹${it.price})" }
+            val productNames = products.map { "${it.name} (₹${it.sellingPrice})" }
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, productNames)
             dialogBinding.spinnerProductSelect.adapter = adapter
             
@@ -85,14 +85,14 @@ class CreateInvoiceFragment : Fragment() {
             dialogBinding.spinnerProductSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     selectedProduct = products[position]
-                    dialogBinding.editItemRate.setText(selectedProduct.price.toString())
+                    dialogBinding.editItemRate.setText(selectedProduct.sellingPrice.toString())
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
             dialogBinding.btnConfirmAdd.setOnClickListener {
                 val qty = dialogBinding.editItemQty.text.toString().toDoubleOrNull() ?: 1.0
-                val rate = dialogBinding.editItemRate.text.toString().toDoubleOrNull() ?: selectedProduct.price
+                val rate = dialogBinding.editItemRate.text.toString().toDoubleOrNull() ?: selectedProduct.sellingPrice
                 
                 val amount = qty * rate * (1 + selectedProduct.gstPercentage / 100.0)
                 
