@@ -1,11 +1,15 @@
 package com.invoicepro.app.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,8 +20,10 @@ import com.invoicepro.app.databinding.ItemInvoiceBinding
 import com.invoicepro.app.model.Invoice
 import com.invoicepro.app.model.BusinessProfile
 import com.invoicepro.app.util.PdfGenerator
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -38,6 +44,10 @@ class InvoiceHistoryFragment : Fragment() {
         binding.recyclerViewInvoices.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewInvoices.adapter = adapter
 
+        binding.buttonExportCsv.setOnClickListener {
+            exportToCsv()
+        }
+
         lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
             db.invoiceDao().getAllInvoices().collectLatest { invoices ->
@@ -53,6 +63,39 @@ class InvoiceHistoryFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    private fun exportToCsv() {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(requireContext())
+            val invoices = db.invoiceDao().getAllInvoices().first()
+            if (invoices.isEmpty()) {
+                Toast.makeText(requireContext(), "No invoices to export", Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+
+            val csvBuilder = StringBuilder("Invoice Number,Date,Customer,Total\n")
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            
+            val customers = db.customerDao().getAllCustomers().first()
+            
+            invoices.forEach { invoice ->
+                val customer = customers.find { it.id == invoice.customerId }
+                csvBuilder.append("${invoice.invoiceNumber},${dateFormat.format(invoice.date)},${customer?.name ?: "Unknown"},${invoice.total}\n")
+            }
+            
+            val fileName = "invoices_backup_${System.currentTimeMillis()}.csv"
+            val file = File(requireContext().getExternalFilesDir(null), fileName)
+            file.writeText(csvBuilder.toString())
+            
+            val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/csv"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(intent, "Export Backup"))
+        }
     }
 
     private fun filterInvoices(query: String) {
