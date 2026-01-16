@@ -19,6 +19,7 @@ class CustomerFragment : Fragment() {
     private var _binding: FragmentCustomerBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: CustomerAdapter
+    private var allCustomers = listOf<Customer>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCustomerBinding.inflate(inflater, container, false)
@@ -34,11 +35,20 @@ class CustomerFragment : Fragment() {
 
         lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
-            db.customerDao().getAllCustomers().collectLatest {
-                adapter.submitList(it)
+            db.customerDao().getAllCustomers().collectLatest { customers ->
+                allCustomers = customers
+                filterCustomers(binding.editSearchCustomers.text.toString())
             }
         }
         
+        binding.editSearchCustomers.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterCustomers(s.toString())
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
         binding.btnSave.setOnClickListener {
             val name = binding.editName.text.toString()
             val phone = binding.editPhone.text.toString()
@@ -60,6 +70,15 @@ class CustomerFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun filterCustomers(query: String) {
+        val filtered = if (query.isEmpty()) {
+            allCustomers
+        } else {
+            allCustomers.filter { it.name.contains(query, ignoreCase = true) || it.phone.contains(query) }
+        }
+        adapter.submitList(filtered)
     }
 
     private inner class CustomerAdapter : RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {

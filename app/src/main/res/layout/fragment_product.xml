@@ -5,9 +5,17 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Product"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:hint="Product/Service Name">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editProductName"
@@ -15,53 +23,70 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Price">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editProductPrice"
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_weight="1"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_marginEnd="4dp"
+            android:hint="Price">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editProductPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Current Stock">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editProductStock"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_weight="1"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_marginStart="4dp"
+            android:hint="Current Stock">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editProductStock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginTop="8dp"
-        android:hint="Unit (e.g. pcs, kg)">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editProductUnit"
-            android:layout_width="match_parent"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="pcs" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_weight="1"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_marginEnd="4dp"
+            android:hint="Unit (pcs, kg)">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editProductUnit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="pcs" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="GST Percentage" />
-
-    <Spinner
-        android:id="@+id/spinnerGst"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/gst_rates" />
+        <Spinner
+            android:id="@+id/spinnerGst"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:entries="@array/gst_rates" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnSaveProduct"
@@ -70,18 +95,29 @@
         android:layout_marginTop="16dp"
         android:text="Save Product" />
 
-    <TextView
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#DDDDDD"
+        android:layout_marginVertical="24dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Product List (Long press to delete)"
-        android:textStyle="bold" />
+        app:startIconDrawable="@android:drawable/ic_menu_search"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:hint="Search Products">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editSearchProducts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="12dp" />
 
 </LinearLayout>

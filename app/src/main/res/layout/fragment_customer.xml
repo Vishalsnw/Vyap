@@ -5,9 +5,17 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Customer"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:hint="Customer Name">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editName"
@@ -19,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:hint="Phone Number">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editPhone"
@@ -31,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:hint="Address">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editAddress"
@@ -42,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:hint="GSTIN (Optional)">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editGstin"
@@ -56,18 +67,29 @@
         android:layout_marginTop="16dp"
         android:text="Save Customer" />
 
-    <TextView
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#DDDDDD"
+        android:layout_marginVertical="24dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Customer List (Long press to delete)"
-        android:textStyle="bold" />
+        app:startIconDrawable="@android:drawable/ic_menu_search"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:hint="Search Customers">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editSearchCustomers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCustomers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="12dp" />
 
 </LinearLayout>

@@ -19,6 +19,7 @@ class ProductFragment : Fragment() {
     private var _binding: FragmentProductBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ProductAdapter
+    private var allProducts = listOf<Product>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProductBinding.inflate(inflater, container, false)
@@ -34,11 +35,20 @@ class ProductFragment : Fragment() {
 
         lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
-            db.productDao().getAllProducts().collectLatest {
-                adapter.submitList(it)
+            db.productDao().getAllProducts().collectLatest { products ->
+                allProducts = products
+                filterProducts(binding.editSearchProducts.text.toString())
             }
         }
         
+        binding.editSearchProducts.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterProducts(s.toString())
+            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
+
         binding.btnSaveProduct.setOnClickListener {
             val name = binding.editProductName.text.toString()
             val priceStr = binding.editProductPrice.text.toString()
@@ -67,6 +77,15 @@ class ProductFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun filterProducts(query: String) {
+        val filtered = if (query.isEmpty()) {
+            allProducts
+        } else {
+            allProducts.filter { it.name.contains(query, ignoreCase = true) }
+        }
+        adapter.submitList(filtered)
     }
 
     private inner class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
