@@ -28,16 +28,20 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Date
 
+import com.invoicepro.app.util.PreferenceManager
+
 class CreateInvoiceFragment : Fragment() {
     private var _binding: FragmentCreateInvoiceBinding? = null
     private val binding get() = _binding!!
     
+    private lateinit var preferenceManager: PreferenceManager
     private var selectedCustomer: Customer? = null
     private val selectedItems = mutableListOf<InvoiceItem>()
     private lateinit var itemAdapter: SelectedItemAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateInvoiceBinding.inflate(inflater, container, false)
+        preferenceManager = PreferenceManager(requireContext())
         return binding.root
     }
 
@@ -138,6 +142,11 @@ class CreateInvoiceFragment : Fragment() {
     }
 
     private fun saveInvoice() {
+        if (!preferenceManager.isProVersion() && preferenceManager.getInvoiceCount() >= 5) {
+            Toast.makeText(requireContext(), "Free limit reached (5 invoices). Upgrade to Pro for unlimited!", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val customer = selectedCustomer ?: run {
             Toast.makeText(requireContext(), "Please select a customer first", Toast.LENGTH_LONG).show()
             return
@@ -174,6 +183,8 @@ class CreateInvoiceFragment : Fragment() {
                 finalItems.forEach { item ->
                     db.productDao().reduceStock(item.productId, item.quantity)
                 }
+                
+                preferenceManager.incrementInvoiceCount()
                 
                 Toast.makeText(requireContext(), "Invoice ${invoice.invoiceNumber} saved successfully!", Toast.LENGTH_SHORT).show()
                 selectedItems.clear()

@@ -97,11 +97,49 @@ class PdfGenerator(private val context: Context) {
             y += 20f
         }
 
+        y += 10f
+        canvas.drawLine(50f, y, 545f, y, paint)
+        y += 20f
+
+        // GST Breakup Table
+        paint.isFakeBoldText = true
+        paint.textSize = 10f
+        canvas.drawText("GST Breakup", 50f, y, paint)
+        y += 15f
+        paint.textSize = 9f
+        canvas.drawText("Taxable Amt", 50f, y, paint)
+        canvas.drawText("CGST %", 150f, y, paint)
+        canvas.drawText("CGST Amt", 220f, y, paint)
+        canvas.drawText("SGST %", 300f, y, paint)
+        canvas.drawText("SGST Amt", 370f, y, paint)
+        canvas.drawText("Total Tax", 480f, y, paint)
+        y += 5f
+        canvas.drawLine(50f, y, 545f, y, paint)
+        y += 15f
+
+        paint.isFakeBoldText = false
+        val groupedItems = items.groupBy { it.gstPercentage }
+        groupedItems.forEach { (gstPct, itemList) ->
+            val taxableAmt = itemList.sumOf { it.rate * it.quantity }
+            val cgstAmt = (taxableAmt * (gstPct / 2.0)) / 100.0
+            val sgstAmt = cgstAmt
+            val totalTax = cgstAmt + sgstAmt
+            
+            canvas.drawText("%.2f".format(taxableAmt), 50f, y, paint)
+            canvas.drawText("${gstPct/2}%", 150f, y, paint)
+            canvas.drawText("%.2f".format(cgstAmt), 220f, y, paint)
+            canvas.drawText("${gstPct/2}%", 300f, y, paint)
+            canvas.drawText("%.2f".format(sgstAmt), 370f, y, paint)
+            canvas.drawText("%.2f".format(totalTax), 480f, y, paint)
+            y += 15f
+        }
+
         y += 20f
         canvas.drawLine(350f, y, 545f, y, paint)
         y += 30f
 
         // Totals
+        paint.textSize = 12f
         paint.isFakeBoldText = true
         canvas.drawText("Subtotal:", 380f, y, paint)
         canvas.drawText("₹%.2f".format(invoice.subtotal), 480f, y, paint)
