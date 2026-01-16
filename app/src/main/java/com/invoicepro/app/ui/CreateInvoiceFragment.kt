@@ -1,17 +1,25 @@
 package com.invoicepro.app.ui
 
+import android.app.Dialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.invoicepro.app.R
 import com.invoicepro.app.data.AppDatabase
+import com.invoicepro.app.databinding.DialogAddProductBinding
 import com.invoicepro.app.databinding.FragmentCreateInvoiceBinding
+import com.invoicepro.app.databinding.ItemInvoiceProductBinding
 import com.invoicepro.app.model.Customer
 import com.invoicepro.app.model.Invoice
 import com.invoicepro.app.model.InvoiceItem
@@ -26,6 +34,7 @@ class CreateInvoiceFragment : Fragment() {
     
     private var selectedCustomer: Customer? = null
     private val selectedItems = mutableListOf<InvoiceItem>()
+    private lateinit var itemAdapter: SelectedItemAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateInvoiceBinding.inflate(inflater, container, false)
@@ -35,30 +44,10 @@ class CreateInvoiceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupCustomerSelector()
+        setupRecyclerView()
         
         binding.btnAddItem.setOnClickListener {
-            // In a real app, this would open a dialog to pick a product
-            // For now, we'll pick a random saved product for demonstration
-            lifecycleScope.launch {
-                val db = AppDatabase.getDatabase(requireContext())
-                val products = db.productDao().getAllProducts().first()
-                if (products.isNotEmpty()) {
-                    val product = products.random()
-                    val item = InvoiceItem(
-                        invoiceId = 0,
-                        productId = product.id,
-                        productName = product.name,
-                        quantity = 1.0,
-                        rate = product.price,
-                        gstPercentage = product.gstPercentage,
-                        amount = product.price * (1 + product.gstPercentage / 100.0)
-                    )
-                    selectedItems.add(item)
-                    updateUI()
-                } else {
-                    Toast.makeText(requireContext(), "Add products first!", Toast.LENGTH_SHORT).show()
-                }
-            }
+            showProductSelectionDialog()
         }
         
         binding.btnGenerateInvoice.setOnClickListener {
@@ -66,10 +55,71 @@ class CreateInvoiceFragment : Fragment() {
         }
     }
 
+    private fun setupRecyclerView() {
+        itemAdapter = SelectedItemAdapter(selectedItems) {
+            updateUI()
+        }
+        binding.recyclerItems.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerItems.adapter = itemAdapter
+    }
+
+    private fun showProductSelectionDialog() {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(requireContext())
+            val products = db.productDao().getAllProducts().first()
+            
+            if (products.isEmpty()) {
+                Toast.makeText(requireContext(), "Please add products first", Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+
+            val dialogBinding = DialogAddProductBinding.inflate(layoutInflater)
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(dialogBinding.root)
+            
+            val productNames = products.map { "${it.name} (₹${it.price})" }
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, productNames)
+            dialogBinding.spinnerProductSelect.adapter = adapter
+            
+            var selectedProduct: Product = products[0]
+            dialogBinding.spinnerProductSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    selectedProduct = products[position]
+                    dialogBinding.editItemRate.setText(selectedProduct.price.toString())
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            dialogBinding.btnConfirmAdd.setOnClickListener {
+                val qty = dialogBinding.editItemQty.text.toString().toDoubleOrNull() ?: 1.0
+                val rate = dialogBinding.editItemRate.text.toString().toDoubleOrNull() ?: selectedProduct.price
+                
+                val amount = qty * rate * (1 + selectedProduct.gstPercentage / 100.0)
+                
+                val item = InvoiceItem(
+                    invoiceId = 0,
+                    productId = selectedProduct.id,
+                    productName = selectedProduct.name,
+                    quantity = qty,
+                    rate = rate,
+                    gstPercentage = selectedProduct.gstPercentage,
+                    amount = amount
+                )
+                
+                selectedItems.add(item)
+                itemAdapter.notifyItemInserted(selectedItems.size - 1)
+                updateUI()
+                dialog.dismiss()
+            }
+
+            dialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+            dialog.show()
+        }
+    }
+
     private fun updateUI() {
         val total = selectedItems.sumOf { it.amount }
         binding.textTotalAmount.text = "₹%.2f".format(total)
-        // In a full implementation, you'd show the list in the RecyclerView
     }
 
     private fun setupCustomerSelector() {
@@ -122,6 +172,7 @@ class CreateInvoiceFragment : Fragment() {
             
             Toast.makeText(requireContext(), "Invoice Saved Successfully!", Toast.LENGTH_SHORT).show()
             selectedItems.clear()
+            itemAdapter.notifyDataSetChanged()
             updateUI()
         }
     }
@@ -129,5 +180,30 @@ class CreateInvoiceFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    class SelectedItemAdapter(private val items: MutableList<InvoiceItem>, private val onUpdate: () -> Unit) : 
+        RecyclerView.Adapter<SelectedItemAdapter.ViewHolder>() {
+        
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val binding = ItemInvoiceProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            return ViewHolder(binding)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val item = items[position]
+            holder.binding.textItemName.text = item.productName
+            holder.binding.textItemDetails.text = "${item.quantity} x ₹${item.rate} (+${item.gstPercentage}% GST)"
+            holder.binding.textItemTotal.text = "₹%.2f".format(item.amount)
+            holder.binding.btnRemoveItem.setOnClickListener {
+                items.removeAt(holder.adapterPosition)
+                notifyItemRemoved(holder.adapterPosition)
+                onUpdate()
+            }
+        }
+
+        override fun getItemCount() = items.size
+
+        class ViewHolder(val binding: ItemInvoiceProductBinding) : RecyclerView.ViewHolder(binding.root)
     }
 }
