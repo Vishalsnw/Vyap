@@ -54,7 +54,10 @@ class CreateInvoiceFragment : Fragment() {
     }
 
     private fun saveInvoice() {
-        val customer = selectedCustomer ?: return
+        val customer = selectedCustomer ?: run {
+            android.widget.Toast.makeText(requireContext(), "Select a customer", android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
         
         // Simplified calculation for demonstration
         val subtotal = selectedProducts.sumOf { it.price }
@@ -74,6 +77,9 @@ class CreateInvoiceFragment : Fragment() {
         lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
             db.invoiceDao().insertInvoice(invoice)
+            android.widget.Toast.makeText(requireContext(), "Invoice Saved!", android.widget.Toast.LENGTH_SHORT).show()
+            // Optionally clear selection
+            selectedProducts.clear()
         }
     }
 
