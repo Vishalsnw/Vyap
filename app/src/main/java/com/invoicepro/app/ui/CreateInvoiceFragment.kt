@@ -170,6 +170,11 @@ class CreateInvoiceFragment : Fragment() {
             val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
             db.invoiceDao().insertInvoiceItems(finalItems)
             
+            // Reduce stock for each product
+            finalItems.forEach { item ->
+                db.productDao().reduceStock(item.productId, item.quantity)
+            }
+            
             Toast.makeText(requireContext(), "Invoice Saved Successfully!", Toast.LENGTH_SHORT).show()
             selectedItems.clear()
             itemAdapter.notifyDataSetChanged()
