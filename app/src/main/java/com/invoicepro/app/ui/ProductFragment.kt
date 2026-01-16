@@ -45,6 +45,8 @@ class ProductFragment : Fragment() {
                     // Clear inputs and show success
                     binding.editProductName.setText("")
                     binding.editProductPrice.setText("")
+                    binding.editProductStock.setText("")
+                    binding.editProductUnit.setText("pcs")
                     android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
                 }
             }
