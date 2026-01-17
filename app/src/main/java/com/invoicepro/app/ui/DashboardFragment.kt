@@ -58,16 +58,22 @@ class DashboardFragment : Fragment() {
                 binding.textExpenses.text = "₹%.2f".format(totalExpenses)
 
                 // Simple Daily Sales Chart Logic
-                val salesByDate = invoices.groupBy { 
-                    java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault()).format(java.util.Date(it.date))
-                }.mapValues { entry -> entry.value.sumOf { it.total } }
-                
-                val sortedDates = salesByDate.keys.sorted()
-                if (sortedDates.isNotEmpty()) {
-                    val lastDates = sortedDates.takeLast(5)
-                    binding.textChartPlaceholder.text = "Recent Sales: " + lastDates.joinToString { date -> 
-                        "$date: ₹${salesByDate[date]?.toInt() ?: 0}" 
+                try {
+                    val salesByDate = invoices.groupBy { 
+                        java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault()).format(java.util.Date(it.date))
+                    }.mapValues { entry -> entry.value.sumOf { it.total } }
+                    
+                    val sortedDates = salesByDate.keys.sorted()
+                    if (sortedDates.isNotEmpty()) {
+                        val lastDates = sortedDates.takeLast(5)
+                        binding.textChartPlaceholder.text = "Recent Sales: " + lastDates.joinToString { date -> 
+                            "$date: ₹${salesByDate[date]?.toInt() ?: 0}" 
+                        }
+                    } else {
+                        binding.textChartPlaceholder.text = "No sales data available yet"
                     }
+                } catch (e: Exception) {
+                    binding.textChartPlaceholder.text = "Error loading chart"
                 }
             }
         }

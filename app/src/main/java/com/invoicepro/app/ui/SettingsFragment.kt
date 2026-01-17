@@ -24,6 +24,9 @@ class SettingsFragment : Fragment() {
     private val selectLogo = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { 
             logoUri = it
+            try {
+                requireContext().contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } catch (e: Exception) {}
             binding.imageLogoPreview.setImageURI(it)
             binding.imageLogoPreview.visibility = View.VISIBLE
             Toast.makeText(requireContext(), "Logo selected", Toast.LENGTH_SHORT).show()
@@ -33,6 +36,9 @@ class SettingsFragment : Fragment() {
     private val selectSignature = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { 
             signatureUri = it
+            try {
+                requireContext().contentResolver.takePersistableUriPermission(it, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } catch (e: Exception) {}
             binding.imageSignaturePreview.setImageURI(it)
             binding.imageSignaturePreview.visibility = View.VISIBLE
             Toast.makeText(requireContext(), "Signature selected", Toast.LENGTH_SHORT).show()
@@ -79,25 +85,39 @@ class SettingsFragment : Fragment() {
 
     private fun loadProfile() {
         lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val profile = db.businessProfileDao().getProfile()
-            profile?.let {
-                binding.editBizName.setText(it.name)
-                binding.editBizAddress.setText(it.address)
-                binding.editBizPhone.setText(it.phone)
-                binding.editBizGstin.setText(it.gstin)
-                
-                it.logoPath?.let { path ->
-                    logoUri = Uri.parse(path)
-                    binding.imageLogoPreview.setImageURI(logoUri)
-                    binding.imageLogoPreview.visibility = View.VISIBLE
+            try {
+                val db = AppDatabase.getDatabase(requireContext())
+                val profile = db.businessProfileDao().getProfile()
+                profile?.let {
+                    binding.editBizName.setText(it.name)
+                    binding.editBizAddress.setText(it.address)
+                    binding.editBizPhone.setText(it.phone)
+                    binding.editBizGstin.setText(it.gstin)
+                    
+                    it.logoPath?.let { path ->
+                        try {
+                            logoUri = Uri.parse(path)
+                            requireContext().contentResolver.takePersistableUriPermission(logoUri!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            binding.imageLogoPreview.setImageURI(logoUri)
+                            binding.imageLogoPreview.visibility = View.VISIBLE
+                        } catch (e: Exception) {
+                            binding.imageLogoPreview.visibility = View.GONE
+                        }
+                    }
+                    
+                    it.signaturePath?.let { path ->
+                        try {
+                            signatureUri = Uri.parse(path)
+                            requireContext().contentResolver.takePersistableUriPermission(signatureUri!!, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            binding.imageSignaturePreview.setImageURI(signatureUri)
+                            binding.imageSignaturePreview.visibility = View.VISIBLE
+                        } catch (e: Exception) {
+                            binding.imageSignaturePreview.visibility = View.GONE
+                        }
+                    }
                 }
-                
-                it.signaturePath?.let { path ->
-                    signatureUri = Uri.parse(path)
-                    binding.imageSignaturePreview.setImageURI(signatureUri)
-                    binding.imageSignaturePreview.visibility = View.VISIBLE
-                }
+            } catch (e: Exception) {
+                // Silent error to prevent crash on load
             }
         }
     }

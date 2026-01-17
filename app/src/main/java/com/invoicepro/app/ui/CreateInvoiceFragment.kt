@@ -217,62 +217,67 @@ class CreateInvoiceFragment : Fragment() {
     }
 
     private fun saveInvoice() {
-        if (!preferenceManager.isProVersion() && preferenceManager.getInvoiceCount() >= 5) {
-            Toast.makeText(requireContext(), "Free limit reached (5 invoices). Upgrade to Pro for unlimited!", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        val customer = selectedCustomer ?: run {
-            Toast.makeText(requireContext(), "Please select a customer first", Toast.LENGTH_LONG).show()
-            return
-        }
-        
-        if (selectedItems.isEmpty()) {
-            Toast.makeText(requireContext(), "Please add at least one item to the invoice", Toast.LENGTH_LONG).show()
-            return
-        }
-        
-        val subtotal = selectedItems.sumOf { it.rate * it.quantity }
-        val total = selectedItems.sumOf { it.amount }
-        val totalGst = total - subtotal
-        
-        val invoice = Invoice(
-            invoiceNumber = "INV-${System.currentTimeMillis()}",
-            customerId = customer.id,
-            date = System.currentTimeMillis(),
-            subtotal = subtotal,
-            cgst = totalGst / 2,
-            sgst = totalGst / 2,
-            igst = 0.0,
-            total = total
-        )
-
-        lifecycleScope.launch {
-            try {
-                val db = AppDatabase.getDatabase(requireContext())
-                val invoiceId = db.invoiceDao().insertInvoice(invoice)
-                
-                val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
-                if (finalItems.isNotEmpty()) {
-                    db.invoiceDao().insertInvoiceItems(finalItems)
-                    
-                    finalItems.forEach { item ->
-                        db.productDao().reduceStock(item.productId, item.quantity)
-                    }
-                }
-                
-                preferenceManager.incrementInvoiceCount()
-                
-                Toast.makeText(requireContext(), "Invoice ${invoice.invoiceNumber} saved successfully!", Toast.LENGTH_SHORT).show()
-                selectedItems.clear()
-                itemAdapter.notifyDataSetChanged()
-                updateUI()
-                
-                // Navigate back to history or clear view
-                parentFragmentManager.popBackStack()
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
+        try {
+            if (!preferenceManager.isProVersion() && preferenceManager.getInvoiceCount() >= 5) {
+                Toast.makeText(requireContext(), "Free limit reached (5 invoices). Upgrade to Pro for unlimited!", Toast.LENGTH_LONG).show()
+                return
             }
+
+            val customer = selectedCustomer ?: run {
+                Toast.makeText(requireContext(), "Please select a customer first", Toast.LENGTH_LONG).show()
+                return
+            }
+            
+            if (selectedItems.isEmpty()) {
+                Toast.makeText(requireContext(), "Please add at least one item to the invoice", Toast.LENGTH_LONG).show()
+                return
+            }
+            
+            val subtotal = selectedItems.sumOf { it.rate * it.quantity }
+            val total = selectedItems.sumOf { it.amount }
+            val totalGst = total - subtotal
+            
+            val invoice = Invoice(
+                invoiceNumber = "INV-${System.currentTimeMillis()}",
+                customerId = customer.id,
+                date = System.currentTimeMillis(),
+                subtotal = subtotal,
+                cgst = totalGst / 2,
+                sgst = totalGst / 2,
+                igst = 0.0,
+                total = total
+            )
+
+            lifecycleScope.launch {
+                try {
+                    val db = AppDatabase.getDatabase(requireContext())
+                    val invoiceId = db.invoiceDao().insertInvoice(invoice)
+                    
+                    val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
+                    if (finalItems.isNotEmpty()) {
+                        db.invoiceDao().insertInvoiceItems(finalItems)
+                        
+                        finalItems.forEach { item ->
+                            db.productDao().reduceStock(item.productId, item.quantity)
+                        }
+                    }
+                    
+                    lastGeneratedInvoice = invoice.copy(id = invoiceId)
+                    preferenceManager.incrementInvoiceCount()
+                    
+                    Toast.makeText(requireContext(), "Invoice ${invoice.invoiceNumber} saved successfully!", Toast.LENGTH_SHORT).show()
+                    selectedItems.clear()
+                    itemAdapter.notifyDataSetChanged()
+                    updateUI()
+                    
+                    // Navigate back to history or clear view
+                    parentFragmentManager.popBackStack()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Critical Error: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
