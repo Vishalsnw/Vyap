@@ -53,6 +53,7 @@ class InvoiceHistoryFragment : Fragment() {
             val db = AppDatabase.getDatabase(requireContext())
             db.invoiceDao().getAllInvoices().collectLatest { invoices ->
                 allInvoices = invoices
+                updateHistorySummary(invoices)
                 filterInvoices(binding.editSearchInvoices.text.toString())
             }
         }
@@ -64,6 +65,12 @@ class InvoiceHistoryFragment : Fragment() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    private fun updateHistorySummary(invoices: List<Invoice>) {
+        binding.textTotalInvoicesCount.text = invoices.size.toString()
+        val totalRevenue = invoices.sumOf { it.total }
+        binding.textTotalRevenue.text = "₹%.2f".format(totalRevenue)
     }
 
     private fun exportToCsv() {
