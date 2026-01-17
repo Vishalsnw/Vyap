@@ -74,43 +74,55 @@ class CreateInvoiceFragment : Fragment() {
     }
 
     private fun shareInvoice(isWhatsapp: Boolean) {
-        val customer = selectedCustomer ?: return
-        if (selectedItems.isEmpty()) return
+        val customer = selectedCustomer ?: run {
+            Toast.makeText(requireContext(), "Please select a customer first", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (selectedItems.isEmpty()) {
+            Toast.makeText(requireContext(), "Please add at least one item", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val business = db.businessProfileDao().getProfile() ?: BusinessProfile(
-                name = "My Business",
-                address = "Business Address",
-                phone = "1234567890",
-                gstin = ""
-            )
+            try {
+                val db = AppDatabase.getDatabase(requireContext())
+                val business = db.businessProfileDao().getProfile() ?: BusinessProfile(
+                    name = "My Business",
+                    address = "Business Address",
+                    phone = "1234567890",
+                    gstin = ""
+                )
 
-            val invoice = lastGeneratedInvoice ?: Invoice(
-                invoiceNumber = "DRAFT-${System.currentTimeMillis()}",
-                customerId = customer.id,
-                date = System.currentTimeMillis(),
-                subtotal = selectedItems.sumOf { it.rate * it.quantity },
-                cgst = 0.0,
-                sgst = 0.0,
-                igst = 0.0,
-                total = selectedItems.sumOf { it.amount }
-            )
+                val invoice = lastGeneratedInvoice ?: Invoice(
+                    invoiceNumber = "DRAFT-${System.currentTimeMillis()}",
+                    customerId = customer.id,
+                    date = System.currentTimeMillis(),
+                    subtotal = selectedItems.sumOf { it.rate * it.quantity },
+                    cgst = 0.0,
+                    sgst = 0.0,
+                    igst = 0.0,
+                    total = selectedItems.sumOf { it.amount }
+                )
 
-            val pdfGenerator = PdfGenerator(requireContext())
-            val file = pdfGenerator.generateInvoicePdf(business, customer, invoice, selectedItems)
+                val pdfGenerator = PdfGenerator(requireContext())
+                val file = pdfGenerator.generateInvoicePdf(business, customer, invoice, selectedItems)
 
-            if (file != null) {
-                val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = "application/pdf"
-                    putExtra(Intent.EXTRA_STREAM, uri)
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    if (isWhatsapp) {
-                        setPackage("com.whatsapp")
+                if (file != null && file.exists()) {
+                    val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "application/pdf"
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        if (isWhatsapp) {
+                            setPackage("com.whatsapp")
+                        }
                     }
+                    startActivity(Intent.createChooser(intent, "Share Invoice"))
+                } else {
+                    Toast.makeText(requireContext(), "Failed to generate PDF", Toast.LENGTH_SHORT).show()
                 }
-                startActivity(Intent.createChooser(intent, "Share Invoice"))
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -151,8 +163,11 @@ class CreateInvoiceFragment : Fragment() {
             }
 
             dialogBinding.btnConfirmAdd.setOnClickListener {
-                val qty = dialogBinding.editItemQty.text.toString().toDoubleOrNull() ?: 1.0
-                val rate = dialogBinding.editItemRate.text.toString().toDoubleOrNull() ?: selectedProduct.sellingPrice
+                val qtyStr = dialogBinding.editItemQty.text.toString()
+                val rateStr = dialogBinding.editItemRate.text.toString()
+                
+                val qty = qtyStr.toDoubleOrNull() ?: 1.0
+                val rate = rateStr.toDoubleOrNull() ?: selectedProduct.sellingPrice
                 
                 val amount = qty * rate * (1 + selectedProduct.gstPercentage / 100.0)
                 

@@ -38,17 +38,26 @@ class PdfGenerator(private val context: Context) {
         // Logo
         business.logoPath?.let { path ->
             try {
-                val bitmap = if (path.startsWith("content://")) {
-                    val inputStream = context.contentResolver.openInputStream(Uri.parse(path))
-                    BitmapFactory.decodeStream(inputStream)
-                } else {
+                val bitmap = if (path.startsWith("content://") || path.startsWith("file://")) {
+                    context.contentResolver.openInputStream(Uri.parse(path))?.use { 
+                        BitmapFactory.decodeStream(it)
+                    }
+                } else if (path.startsWith("/")) {
                     BitmapFactory.decodeFile(path)
+                } else {
+                    null
                 }
+                
                 bitmap?.let {
-                    val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(it, 80, 80, true)
+                    val ratio = it.width.toFloat() / it.height.toFloat()
+                    val width = 80f
+                    val height = width / ratio
+                    val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(it, width.toInt(), height.toInt(), true)
                     canvas.drawBitmap(scaledBitmap, 450f, 40f, paint)
                 }
-            } catch (e: Exception) { e.printStackTrace() }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         // Business Header
