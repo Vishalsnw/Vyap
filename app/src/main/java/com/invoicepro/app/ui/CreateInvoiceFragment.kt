@@ -82,7 +82,8 @@ class CreateInvoiceFragment : Fragment() {
             val business = db.businessProfileDao().getProfile() ?: BusinessProfile(
                 name = "My Business",
                 address = "Business Address",
-                phone = "1234567890"
+                phone = "1234567890",
+                gstin = ""
             )
 
             val invoice = lastGeneratedInvoice ?: Invoice(

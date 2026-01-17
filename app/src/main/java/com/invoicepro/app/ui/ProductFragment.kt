@@ -62,19 +62,20 @@ class ProductFragment : Fragment() {
 
     private fun showAddProductBottomSheet() {
         val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(requireContext())
-        val dialogBinding = com.invoicepro.app.databinding.DialogAddProductBinding.inflate(layoutInflater)
+        val dialogBinding = com.invoicepro.app.databinding.DialogNewProductBinding.inflate(layoutInflater)
         dialog.setContentView(dialogBinding.root)
 
-        dialogBinding.btnConfirmAdd.setOnClickListener {
-            val name = dialogBinding.editItemName?.text.toString() ?: ""
-            val priceStr = dialogBinding.editItemRate.text.toString()
-            val stockStr = dialogBinding.editItemQty.text.toString() // Reusing DialogAddProductBinding fields
+        dialogBinding.btnSaveProduct.setOnClickListener {
+            val name = dialogBinding.editProductName.text.toString()
+            val priceStr = dialogBinding.editProductPrice.text.toString()
+            val stockStr = dialogBinding.editProductStock.text.toString()
+            val gstStr = dialogBinding.editProductGst.text.toString()
 
             if (name.isNotEmpty() && priceStr.isNotEmpty()) {
                 val product = Product(
                     name = name,
                     sellingPrice = priceStr.toDoubleOrNull() ?: 0.0,
-                    gstPercentage = 0, // Simplified for now
+                    gstPercentage = gstStr.toIntOrNull() ?: 0,
                     stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
                     unit = "pcs"
                 )
@@ -84,6 +85,8 @@ class ProductFragment : Fragment() {
                     android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 }
+            } else {
+                android.widget.Toast.makeText(requireContext(), "Name and Price are required", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
         dialog.show()
