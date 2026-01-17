@@ -36,6 +36,11 @@ class SettingsFragment : Fragment() {
     }
 
     private fun checkAndRequestPermissions() {
+        if (android.os.Build.VERSION.SDK_INT <= android.os.Build.VERSION_CODES.Q) {
+            // No runtime request needed for older versions or handle specifically if required
+            return
+        }
+        
         val permissions = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         } else {
