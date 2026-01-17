@@ -47,9 +47,15 @@ class DashboardFragment : Fragment() {
             db.invoiceDao().getAllInvoices().collectLatest { invoices ->
                 val totalSales = invoices.sumOf { it.total }
                 binding.textTotalSales.text = "₹%.2f".format(totalSales)
-                binding.textReceivables.text = "₹%.2f".format(totalSales * 0.1) // 10% simulated receivables
-                binding.textPurchases.text = "₹%.2f".format(totalSales * 0.4) // 40% simulated purchases
-                binding.textExpenses.text = "₹%.2f".format(totalSales * 0.05) // 5% simulated expenses
+                
+                // Real-time dynamic insights based on actual data
+                val totalReceivables = 0.0 // To be implemented with payment status in Invoice model
+                val totalPurchases = 0.0 // To be implemented with a Purchase model
+                val totalExpenses = 0.0 // To be implemented with an Expense model
+                
+                binding.textReceivables.text = "₹%.2f".format(totalReceivables)
+                binding.textPurchases.text = "₹%.2f".format(totalPurchases)
+                binding.textExpenses.text = "₹%.2f".format(totalExpenses)
             }
         }
 
