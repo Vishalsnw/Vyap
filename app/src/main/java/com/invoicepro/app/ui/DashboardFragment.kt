@@ -56,6 +56,15 @@ class DashboardFragment : Fragment() {
                 binding.textReceivables.text = "₹%.2f".format(totalReceivables)
                 binding.textPurchases.text = "₹%.2f".format(totalPurchases)
                 binding.textExpenses.text = "₹%.2f".format(totalExpenses)
+
+                // Simple Daily Sales Chart Logic
+                val salesByDate = invoices.groupBy { 
+                    java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault()).format(java.util.Date(it.date))
+                }.mapValues { entry -> entry.value.sumOf { it.total } }
+                
+                if (salesByDate.isNotEmpty()) {
+                    binding.textChartPlaceholder.text = "Recent Sales: " + salesByDate.entries.takeLast(5).joinToString { "${it.key}: ₹${it.value.toInt()}" }
+                }
             }
         }
 

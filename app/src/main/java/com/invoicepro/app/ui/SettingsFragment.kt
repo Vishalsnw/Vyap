@@ -24,6 +24,8 @@ class SettingsFragment : Fragment() {
     private val selectLogo = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { 
             logoUri = it
+            binding.imageLogoPreview.setImageURI(it)
+            binding.imageLogoPreview.visibility = View.VISIBLE
             Toast.makeText(requireContext(), "Logo selected", Toast.LENGTH_SHORT).show()
         }
     }
@@ -31,6 +33,8 @@ class SettingsFragment : Fragment() {
     private val selectSignature = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { 
             signatureUri = it
+            binding.imageSignaturePreview.setImageURI(it)
+            binding.imageSignaturePreview.visibility = View.VISIBLE
             Toast.makeText(requireContext(), "Signature selected", Toast.LENGTH_SHORT).show()
         }
     }
@@ -82,6 +86,18 @@ class SettingsFragment : Fragment() {
                 binding.editBizAddress.setText(it.address)
                 binding.editBizPhone.setText(it.phone)
                 binding.editBizGstin.setText(it.gstin)
+                
+                it.logoPath?.let { path ->
+                    logoUri = Uri.parse(path)
+                    binding.imageLogoPreview.setImageURI(logoUri)
+                    binding.imageLogoPreview.visibility = View.VISIBLE
+                }
+                
+                it.signaturePath?.let { path ->
+                    signatureUri = Uri.parse(path)
+                    binding.imageSignaturePreview.setImageURI(signatureUri)
+                    binding.imageSignaturePreview.visibility = View.VISIBLE
+                }
             }
         }
     }

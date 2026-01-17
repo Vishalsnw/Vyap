@@ -163,28 +163,32 @@ class CreateInvoiceFragment : Fragment() {
             }
 
             dialogBinding.btnConfirmAdd.setOnClickListener {
-                val qtyStr = dialogBinding.editItemQty.text.toString()
-                val rateStr = dialogBinding.editItemRate.text.toString()
-                
-                val qty = qtyStr.toDoubleOrNull() ?: 1.0
-                val rate = rateStr.toDoubleOrNull() ?: selectedProduct.sellingPrice
-                
-                val amount = qty * rate * (1 + selectedProduct.gstPercentage / 100.0)
-                
-                val item = InvoiceItem(
-                    invoiceId = 0,
-                    productId = selectedProduct.id,
-                    productName = selectedProduct.name,
-                    quantity = qty,
-                    rate = rate,
-                    gstPercentage = selectedProduct.gstPercentage,
-                    amount = amount
-                )
-                
-                selectedItems.add(item)
-                itemAdapter.notifyItemInserted(selectedItems.size - 1)
-                updateUI()
-                dialog.dismiss()
+                try {
+                    val qtyStr = dialogBinding.editItemQty.text.toString()
+                    val rateStr = dialogBinding.editItemRate.text.toString()
+                    
+                    val qty = qtyStr.toDoubleOrNull() ?: 1.0
+                    val rate = rateStr.toDoubleOrNull() ?: selectedProduct.sellingPrice
+                    
+                    val amount = qty * rate * (1 + selectedProduct.gstPercentage / 100.0)
+                    
+                    val item = InvoiceItem(
+                        invoiceId = 0,
+                        productId = selectedProduct.id,
+                        productName = selectedProduct.name,
+                        quantity = qty,
+                        rate = rate,
+                        gstPercentage = selectedProduct.gstPercentage,
+                        amount = amount
+                    )
+                    
+                    selectedItems.add(item)
+                    itemAdapter.notifyItemInserted(selectedItems.size - 1)
+                    updateUI()
+                    dialog.dismiss()
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Error adding item: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
 
             dialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
