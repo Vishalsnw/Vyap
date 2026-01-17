@@ -57,7 +57,7 @@ class ProductFragment : Fragment() {
 
     private fun updateStockSummary(products: List<Product>) {
         binding.textTotalItemsCount.text = products.size.toString()
-        binding.textLowStockCount.text = products.count { it.stockQuantity <= 5 }.toString()
+        binding.textLowStockCount.text = products.count { it.stockQuantity <= it.minStockLevel }.toString()
     }
 
     private fun showAddProductBottomSheet() {
@@ -70,6 +70,7 @@ class ProductFragment : Fragment() {
             val priceStr = dialogBinding.editProductPrice.text.toString()
             val stockStr = dialogBinding.editProductStock.text.toString()
             val gstStr = dialogBinding.editProductGst.text.toString()
+            val minStockStr = dialogBinding.editProductMinStock.text.toString()
 
             if (name.isNotEmpty() && priceStr.isNotEmpty()) {
                 val product = Product(
@@ -77,6 +78,7 @@ class ProductFragment : Fragment() {
                     sellingPrice = priceStr.toDoubleOrNull() ?: 0.0,
                     gstPercentage = gstStr.toIntOrNull() ?: 0,
                     stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
+                    minStockLevel = minStockStr.toDoubleOrNull() ?: 5.0,
                     unit = "pcs"
                 )
                 lifecycleScope.launch {
@@ -120,8 +122,8 @@ class ProductFragment : Fragment() {
             holder.binding.textProductStock.text = "Stock: ${product.stockQuantity} ${product.unit}"
             holder.binding.textProductPrice.text = "₹%.2f".format(product.sellingPrice)
             
-            // Low stock alert (threshold 5)
-            if (product.stockQuantity <= 5) {
+            // Low stock alert (using custom threshold)
+            if (product.stockQuantity <= product.minStockLevel) {
                 holder.binding.textStockAlert.visibility = View.VISIBLE
             } else {
                 holder.binding.textStockAlert.visibility = View.GONE

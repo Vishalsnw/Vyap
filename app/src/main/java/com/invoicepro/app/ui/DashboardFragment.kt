@@ -65,6 +65,14 @@ class DashboardFragment : Fragment() {
             db.productDao().getAllProducts().collectLatest { products ->
                 val stockValue = products.sumOf { it.sellingPrice * it.stockQuantity }
                 binding.textStockValue.text = "₹%.2f".format(stockValue)
+                
+                val lowStockCount = products.count { it.stockQuantity <= it.minStockLevel }
+                if (lowStockCount > 0) {
+                    binding.textLowStockAlert.visibility = View.VISIBLE
+                    binding.textLowStockAlert.text = "⚠️ $lowStockCount Items Low in Stock"
+                } else {
+                    binding.textLowStockAlert.visibility = View.GONE
+                }
             }
         }
     }

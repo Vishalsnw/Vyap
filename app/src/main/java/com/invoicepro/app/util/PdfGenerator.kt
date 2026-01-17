@@ -170,6 +170,20 @@ class PdfGenerator(private val context: Context) {
         canvas.drawText("Grand Total:", 380f, y, paint)
         canvas.drawText("₹%.2f".format(invoice.total), 480f, y, paint)
 
+        // Terms and Conditions
+        y += 40f
+        paint.textSize = 10f
+        paint.isFakeBoldText = true
+        canvas.drawText("Terms & Conditions:", 50f, y, paint)
+        y += 15f
+        paint.isFakeBoldText = false
+        paint.textSize = 8f
+        canvas.drawText("1. Goods once sold will not be taken back or exchanged.", 50f, y, paint)
+        y += 12f
+        canvas.drawText("2. Subject to local jurisdiction.", 50f, y, paint)
+        y += 12f
+        canvas.drawText("3. This is a computer generated invoice.", 50f, y, paint)
+
         // Signature
         business.signaturePath?.let { path ->
             try {
