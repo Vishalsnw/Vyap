@@ -12,9 +12,28 @@ import com.invoicepro.app.databinding.FragmentSettingsBinding
 import com.invoicepro.app.model.BusinessProfile
 import kotlinx.coroutines.launch
 
+import androidx.activity.result.contract.ActivityResultContracts
+import android.net.Uri
+
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
+    private var logoUri: Uri? = null
+    private var signatureUri: Uri? = null
+
+    private val selectLogo = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { 
+            logoUri = it
+            Toast.makeText(requireContext(), "Logo selected", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private val selectSignature = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { 
+            signatureUri = it
+            Toast.makeText(requireContext(), "Signature selected", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
@@ -25,6 +44,9 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         loadProfile()
         
+        binding.btnSelectLogo.setOnClickListener { selectLogo.launch("image/*") }
+        binding.btnSelectSignature.setOnClickListener { selectSignature.launch("image/*") }
+
         binding.btnSaveProfile.setOnClickListener {
             val name = binding.editBizName.text.toString()
             val address = binding.editBizAddress.text.toString()
@@ -36,7 +58,9 @@ class SettingsFragment : Fragment() {
                     name = name,
                     address = address,
                     phone = phone,
-                    gstin = gstin
+                    gstin = gstin,
+                    logoPath = logoUri?.toString(),
+                    signaturePath = signatureUri?.toString()
                 )
                 lifecycleScope.launch {
                     val db = AppDatabase.getDatabase(requireContext())

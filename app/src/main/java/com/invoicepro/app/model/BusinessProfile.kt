@@ -10,5 +10,7 @@ data class BusinessProfile(
     val name: String,
     val address: String,
     val gstin: String?,
-    val phone: String
+    val phone: String,
+    val logoPath: String? = null,
+    val signaturePath: String? = null
 )

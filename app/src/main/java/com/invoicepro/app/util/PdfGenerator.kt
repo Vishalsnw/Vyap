@@ -15,6 +15,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import android.graphics.BitmapFactory
+import android.net.Uri
+
 class PdfGenerator(private val context: Context) {
 
     fun generateInvoicePdf(
@@ -31,6 +34,16 @@ class PdfGenerator(private val context: Context) {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
         var y = 50f
+
+        // Logo
+        business.logoPath?.let { path ->
+            try {
+                val inputStream = context.contentResolver.openInputStream(Uri.parse(path))
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(bitmap, 80, 80, true)
+                canvas.drawBitmap(scaledBitmap, 450f, 40f, paint)
+            } catch (e: Exception) { }
+        }
 
         // Business Header
         paint.textSize = 20f
@@ -150,6 +163,18 @@ class PdfGenerator(private val context: Context) {
         paint.textSize = 16f
         canvas.drawText("Grand Total:", 380f, y, paint)
         canvas.drawText("₹%.2f".format(invoice.total), 480f, y, paint)
+
+        // Signature
+        business.signaturePath?.let { path ->
+            try {
+                y += 40f
+                val inputStream = context.contentResolver.openInputStream(Uri.parse(path))
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(bitmap, 120, 60, true)
+                canvas.drawText("Authorized Signature", 400f, y, paint)
+                canvas.drawBitmap(scaledBitmap, 400f, y + 10f, paint)
+            } catch (e: Exception) { }
+        }
 
         pdfDocument.finishPage(page)
 
