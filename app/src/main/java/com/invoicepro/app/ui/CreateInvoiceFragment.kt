@@ -234,10 +234,12 @@ class CreateInvoiceFragment : Fragment() {
                 val invoiceId = db.invoiceDao().insertInvoice(invoice)
                 
                 val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
-                db.invoiceDao().insertInvoiceItems(finalItems)
-                
-                finalItems.forEach { item ->
-                    db.productDao().reduceStock(item.productId, item.quantity)
+                if (finalItems.isNotEmpty()) {
+                    db.invoiceDao().insertInvoiceItems(finalItems)
+                    
+                    finalItems.forEach { item ->
+                        db.productDao().reduceStock(item.productId, item.quantity)
+                    }
                 }
                 
                 preferenceManager.incrementInvoiceCount()

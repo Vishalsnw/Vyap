@@ -70,9 +70,16 @@ class CustomerFragment : Fragment() {
             val phone = dialogBinding.editCustomerPhone.text.toString()
             val address = dialogBinding.editCustomerAddress.text.toString()
             val gstin = dialogBinding.editCustomerGstin.text.toString()
+            val age = dialogBinding.editCustomerAge.text.toString().toIntOrNull()
 
             if (name.isNotEmpty() && phone.isNotEmpty()) {
-                val customer = Customer(name = name, phone = phone, address = address, gstin = gstin.ifEmpty { null })
+                val customer = Customer(
+                    name = name,
+                    phone = phone,
+                    address = address,
+                    gstin = gstin.ifEmpty { null },
+                    age = age
+                )
                 lifecycleScope.launch {
                     val db = AppDatabase.getDatabase(requireContext())
                     db.customerDao().insertCustomer(customer)
@@ -113,6 +120,7 @@ class CustomerFragment : Fragment() {
             holder.binding.textCustomerName.text = customer.name
             holder.binding.textCustomerPhone.text = customer.phone
             holder.binding.textCustomerGstin.text = customer.gstin ?: "No GSTIN"
+            holder.binding.textCustomerAge.text = if (customer.age != null) "Age: ${customer.age}" else ""
             
             holder.binding.root.setOnLongClickListener {
                 android.app.AlertDialog.Builder(holder.itemView.context)

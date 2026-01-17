@@ -9,7 +9,8 @@ data class Customer(
     val name: String,
     val phone: String,
     val address: String,
-    val gstin: String? = null
+    val gstin: String? = null,
+    val age: Int? = null
 )
 
 @Entity(tableName = "products")
