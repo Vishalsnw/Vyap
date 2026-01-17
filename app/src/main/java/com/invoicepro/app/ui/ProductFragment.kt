@@ -37,10 +37,15 @@ class ProductFragment : Fragment() {
             val db = AppDatabase.getDatabase(requireContext())
             db.productDao().getAllProducts().collectLatest { products ->
                 allProducts = products
+                updateStockSummary(products)
                 filterProducts(binding.editSearchProducts.text.toString())
             }
         }
         
+        binding.fabAddProduct.setOnClickListener {
+            showAddProductBottomSheet()
+        }
+
         binding.editSearchProducts.addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -48,35 +53,40 @@ class ProductFragment : Fragment() {
             }
             override fun afterTextChanged(s: android.text.Editable?) {}
         })
+    }
 
-        binding.btnSaveProduct.setOnClickListener {
-            val name = binding.editProductName.text.toString()
-            val priceStr = binding.editProductPrice.text.toString()
-            val stockStr = binding.editProductStock.text.toString()
-            val unit = binding.editProductUnit.text.toString()
-            val gstStr = binding.spinnerGst.selectedItem.toString().replace("%", "")
+    private fun updateStockSummary(products: List<Product>) {
+        binding.textTotalItemsCount.text = products.size.toString()
+        binding.textLowStockCount.text = products.count { it.stockQuantity <= 5 }.toString()
+    }
+
+    private fun showAddProductBottomSheet() {
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(requireContext())
+        val dialogBinding = com.invoicepro.app.databinding.DialogAddProductBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.btnConfirmAdd.setOnClickListener {
+            val name = dialogBinding.editItemName?.text.toString() ?: ""
+            val priceStr = dialogBinding.editItemRate.text.toString()
+            val stockStr = dialogBinding.editItemQty.text.toString() // Reusing DialogAddProductBinding fields
 
             if (name.isNotEmpty() && priceStr.isNotEmpty()) {
                 val product = Product(
                     name = name,
                     sellingPrice = priceStr.toDoubleOrNull() ?: 0.0,
-                    gstPercentage = gstStr.toIntOrNull() ?: 0,
+                    gstPercentage = 0, // Simplified for now
                     stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
-                    unit = unit.ifEmpty { "pcs" }
+                    unit = "pcs"
                 )
                 lifecycleScope.launch {
                     val db = AppDatabase.getDatabase(requireContext())
                     db.productDao().insertProduct(product)
-                    
-                    // Clear inputs and show success
-                    binding.editProductName.setText("")
-                    binding.editProductPrice.setText("")
-                    binding.editProductStock.setText("")
-                    binding.editProductUnit.setText("pcs")
                     android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
                 }
             }
         }
+        dialog.show()
     }
 
     private fun filterProducts(query: String) {
