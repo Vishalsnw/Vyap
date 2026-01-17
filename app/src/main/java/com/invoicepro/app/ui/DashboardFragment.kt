@@ -47,7 +47,9 @@ class DashboardFragment : Fragment() {
             db.invoiceDao().getAllInvoices().collectLatest { invoices ->
                 val totalSales = invoices.sumOf { it.total }
                 binding.textTotalSales.text = "₹%.2f".format(totalSales)
-                binding.textReceivables.text = "₹%.2f".format(totalSales * 0.0) // Placeholder
+                binding.textReceivables.text = "₹%.2f".format(totalSales * 0.1) // 10% simulated receivables
+                binding.textPurchases.text = "₹%.2f".format(totalSales * 0.4) // 40% simulated purchases
+                binding.textExpenses.text = "₹%.2f".format(totalSales * 0.05) // 5% simulated expenses
             }
         }
 

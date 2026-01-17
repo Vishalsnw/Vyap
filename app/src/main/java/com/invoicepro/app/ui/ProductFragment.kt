@@ -107,6 +107,13 @@ class ProductFragment : Fragment() {
             holder.binding.textProductStock.text = "Stock: ${product.stockQuantity} ${product.unit}"
             holder.binding.textProductPrice.text = "₹%.2f".format(product.sellingPrice)
             
+            // Low stock alert (threshold 5)
+            if (product.stockQuantity <= 5) {
+                holder.binding.textStockAlert.visibility = View.VISIBLE
+            } else {
+                holder.binding.textStockAlert.visibility = View.GONE
+            }
+            
             holder.binding.root.setOnLongClickListener {
                 android.app.AlertDialog.Builder(holder.itemView.context)
                     .setTitle("Delete Product")

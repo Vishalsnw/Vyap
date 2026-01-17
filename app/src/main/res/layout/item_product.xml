@@ -35,6 +35,17 @@
                 android:textColor="#666666" />
 
             <TextView
+                android:id="@+id/textStockAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Low Stock!"
+                android:textColor="#D32F2F"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:visibility="gone"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
                 android:id="@+id/textProductPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
