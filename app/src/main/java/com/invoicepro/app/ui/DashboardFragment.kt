@@ -62,8 +62,12 @@ class DashboardFragment : Fragment() {
                     java.text.SimpleDateFormat("dd/MM", java.util.Locale.getDefault()).format(java.util.Date(it.date))
                 }.mapValues { entry -> entry.value.sumOf { it.total } }
                 
-                if (salesByDate.isNotEmpty()) {
-                    binding.textChartPlaceholder.text = "Recent Sales: " + salesByDate.entries.takeLast(5).joinToString { "${it.key}: ₹${it.value.toInt()}" }
+                val sortedDates = salesByDate.keys.sorted()
+                if (sortedDates.isNotEmpty()) {
+                    val lastDates = sortedDates.takeLast(5)
+                    binding.textChartPlaceholder.text = "Recent Sales: " + lastDates.joinToString { date -> 
+                        "$date: ₹${salesByDate[date]?.toInt() ?: 0}" 
+                    }
                 }
             }
         }
