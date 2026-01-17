@@ -30,6 +30,11 @@ import java.util.Date
 
 import com.invoicepro.app.util.PreferenceManager
 
+import androidx.core.content.FileProvider
+import android.content.Intent
+import com.invoicepro.app.util.PdfGenerator
+import com.invoicepro.app.model.BusinessProfile
+
 class CreateInvoiceFragment : Fragment() {
     private var _binding: FragmentCreateInvoiceBinding? = null
     private val binding get() = _binding!!
@@ -38,6 +43,7 @@ class CreateInvoiceFragment : Fragment() {
     private var selectedCustomer: Customer? = null
     private val selectedItems = mutableListOf<InvoiceItem>()
     private lateinit var itemAdapter: SelectedItemAdapter
+    private var lastGeneratedInvoice: Invoice? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateInvoiceBinding.inflate(inflater, container, false)
@@ -56,6 +62,55 @@ class CreateInvoiceFragment : Fragment() {
         
         binding.btnGenerateInvoice.setOnClickListener {
             saveInvoice()
+        }
+
+        binding.btnDownloadPdf.setOnClickListener {
+            shareInvoice(false)
+        }
+
+        binding.btnShareWhatsapp.setOnClickListener {
+            shareInvoice(true)
+        }
+    }
+
+    private fun shareInvoice(isWhatsapp: Boolean) {
+        val customer = selectedCustomer ?: return
+        if (selectedItems.isEmpty()) return
+
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(requireContext())
+            val business = db.businessProfileDao().getProfile() ?: BusinessProfile(
+                name = "My Business",
+                address = "Business Address",
+                phone = "1234567890"
+            )
+
+            val invoice = lastGeneratedInvoice ?: Invoice(
+                invoiceNumber = "DRAFT-${System.currentTimeMillis()}",
+                customerId = customer.id,
+                date = System.currentTimeMillis(),
+                subtotal = selectedItems.sumOf { it.rate * it.quantity },
+                cgst = 0.0,
+                sgst = 0.0,
+                igst = 0.0,
+                total = selectedItems.sumOf { it.amount }
+            )
+
+            val pdfGenerator = PdfGenerator(requireContext())
+            val file = pdfGenerator.generateInvoicePdf(business, customer, invoice, selectedItems)
+
+            if (file != null) {
+                val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "application/pdf"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    if (isWhatsapp) {
+                        setPackage("com.whatsapp")
+                    }
+                }
+                startActivity(Intent.createChooser(intent, "Share Invoice"))
+            }
         }
     }
 
