@@ -1,43 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="28dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Item to Invoice"
-        android:textSize="20sp"
+        android:text="Add Item"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="24dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Product"
-        android:textSize="12sp"
-        android:textColor="#666666"/>
+        android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+        android:alpha="0.7"
+        android:layout_marginBottom="8dp"/>
 
-    <Spinner
-        android:id="@+id/spinnerProductSelect"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"/>
+        android:layout_height="56dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        android:backgroundTint="@color/surfaceVariant"
+        android:layout_marginBottom="16dp">
+        <Spinner
+            android:id="@+id/spinnerProductSelect"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"/>
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:orientation="horizontal">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Quantity"
-            android:layout_marginEnd="8dp">
+            android:layout_marginEnd="8dp"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:hint="Qty">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editItemQty"
                 android:layout_width="match_parent"
@@ -50,8 +60,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Rate"
-            android:layout_marginStart="8dp">
+            android:layout_marginStart="8dp"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:hint="Rate">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editItemRate"
                 android:layout_width="match_parent"
@@ -60,11 +71,12 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnConfirmAdd"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Add to List"/>
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:text="Add to Invoice"
+        app:cornerRadius="16dp" />
 
 </LinearLayout>

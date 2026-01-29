@@ -3,9 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/surfaceVariant"
+    android:backgroundTint="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,35 +17,35 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
             <TextView
                 android:id="@+id/textInvoiceNum"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 android:textStyle="bold"
-                android:textColor="#333333" />
-
+                android:textColor="@color/onSurface" />
             <TextView
                 android:id="@+id/textInvoiceTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:textSize="18sp"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 android:textStyle="bold"
-                android:textColor="#2E7D32" />
-        </RelativeLayout>
+                android:textColor="@color/success" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textInvoiceDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textSize="12sp"
-            android:textColor="#666666" />
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:alpha="0.6" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
