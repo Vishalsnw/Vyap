@@ -1,158 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/background">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Business Profile"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#1D1B20" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This information will appear on your generated invoices."
-        android:textSize="14sp"
-        android:textColor="#49454F"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp"/>
-
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="#E0E0E0">
+        android:background="@color/background"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Business Profile"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This information will appear on your generated invoices."
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:alpha="0.7"
+                android:layout_marginBottom="24dp"/>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:hint="Business Name">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editBizName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:hint="Address">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editBizAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:hint="Phone Number">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editBizPhone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="phone" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:hint="GSTIN (Optional)">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editBizGstin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
-                
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:id="@+id/imageLogoPreview"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:scaleType="centerInside"
-                        android:background="#F5F5F5"
-                        android:layout_marginBottom="8dp"
-                        android:visibility="gone"/>
-
-                    <Button
-                        android:id="@+id/btnSelectLogo"
-                        style="@style/Widget.Material3.Button.TonalButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Select Logo" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="16dp"
-                    android:layout_height="0dp"/>
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/surfaceVariant"
+                android:backgroundTint="@color/surface">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:gravity="center">
+                    android:padding="20dp">
 
-                    <ImageView
-                        android:id="@+id/imageSignaturePreview"
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:scaleType="centerInside"
-                        android:background="#F5F5F5"
-                        android:layout_marginBottom="8dp"
-                        android:visibility="gone"/>
-
-                    <Button
-                        android:id="@+id/btnSelectSignature"
-                        style="@style/Widget.Material3.Button.TonalButton"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Select Signature"/>
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:hint="Business Name">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editBizName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:hint="Address">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editBizAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:hint="Phone Number">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editBizPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="phone" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:hint="GSTIN (Optional)">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editBizGstin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="24dp">
+                        
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardLogo"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                android:backgroundTint="@color/surfaceVariant"
+                                android:layout_marginBottom="12dp">
+                                <ImageView
+                                    android:id="@+id/imageLogoPreview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerInside"
+                                    android:padding="8dp"
+                                    android:visibility="gone"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnSelectLogo"
+                                style="@style/Widget.Material3.Button.TonalButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Logo"
+                                app:icon="@android:drawable/ic_menu_gallery" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="0dp"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardSignature"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                app:cardCornerRadius="16dp"
+                                app:cardElevation="0dp"
+                                android:backgroundTint="@color/surfaceVariant"
+                                android:layout_marginBottom="12dp">
+                                <ImageView
+                                    android:id="@+id/imageSignaturePreview"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:scaleType="centerInside"
+                                    android:padding="8dp"
+                                    android:visibility="gone"/>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnSelectSignature"
+                                style="@style/Widget.Material3.Button.TonalButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Signature"
+                                app:icon="@android:drawable/ic_menu_edit" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveProfile"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="40dp"
+                android:text="Update Profile"
+                style="@style/Widget.Material3.Button"
+                app:cornerRadius="16dp" />
+
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.core.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/btnSaveProfile"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="32dp"
-        android:text="Save Profile"
-        style="@style/Widget.Material3.Button" />
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
