@@ -258,7 +258,11 @@ class CreateInvoiceFragment : Fragment() {
                         db.invoiceDao().insertInvoiceItems(finalItems)
                         
                         finalItems.forEach { item ->
-                            db.productDao().reduceStock(item.productId, item.quantity)
+                            try {
+                                db.productDao().reduceStock(item.productId, item.quantity)
+                            } catch (e: Exception) {
+                                // Stock reduction failure shouldn't crash the invoice save
+                            }
                         }
                     }
                     
@@ -266,12 +270,16 @@ class CreateInvoiceFragment : Fragment() {
                     preferenceManager.incrementInvoiceCount()
                     
                     Toast.makeText(requireContext(), "Invoice ${invoice.invoiceNumber} saved successfully!", Toast.LENGTH_SHORT).show()
+                    
+                    // Share immediately after saving to provide better UX and avoid "lastGeneratedInvoice" being null issues
+                    shareInvoice(false)
+
                     selectedItems.clear()
                     itemAdapter.notifyDataSetChanged()
                     updateUI()
                     
-                    // Navigate back to history or clear view
-                    parentFragmentManager.popBackStack()
+                    // Navigate back after small delay or after share is initiated
+                    // parentFragmentManager.popBackStack() 
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
                 }

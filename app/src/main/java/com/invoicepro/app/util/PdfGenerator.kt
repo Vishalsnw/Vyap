@@ -196,12 +196,18 @@ class PdfGenerator(private val context: Context) {
         // Signature
         business.signaturePath?.let { path ->
             try {
-                y += 40f
-                val inputStream = context.contentResolver.openInputStream(Uri.parse(path))
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(bitmap, 120, 60, true)
-                canvas.drawText("Authorized Signature", 400f, y, paint)
-                canvas.drawBitmap(scaledBitmap, 400f, y + 10f, paint)
+                if (path.isNotEmpty()) {
+                    y += 40f
+                    val inputStream = context.contentResolver.openInputStream(Uri.parse(path))
+                    inputStream?.use {
+                        val bitmap = BitmapFactory.decodeStream(it)
+                        bitmap?.let { b ->
+                            val scaledBitmap = android.graphics.Bitmap.createScaledBitmap(b, 120, 60, true)
+                            canvas.drawText("Authorized Signature", 400f, y, paint)
+                            canvas.drawBitmap(scaledBitmap, 400f, y + 10f, paint)
+                        }
+                    }
+                }
             } catch (e: Exception) { }
         }
 
