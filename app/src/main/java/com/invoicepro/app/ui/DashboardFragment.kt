@@ -54,8 +54,8 @@ class DashboardFragment : Fragment() {
                 val totalExpenses = 0.0 // To be implemented with an Expense model
                 
                 binding.textReceivables.text = "₹%.2f".format(totalReceivables)
-                binding.textPurchases.text = "₹%.2f".format(totalPurchases)
-                binding.textExpenses.text = "₹%.2f".format(totalExpenses)
+                // binding.textPurchases.text = "₹%.2f".format(totalPurchases)
+                // binding.textExpenses.text = "₹%.2f".format(totalExpenses)
 
                 // Simple Daily Sales Chart Logic
                 try {
