@@ -27,7 +27,7 @@ interface ProductDao {
     @Delete
     suspend fun deleteProduct(product: Product)
 
-    @Query("UPDATE products SET stockQuantity = stockQuantity - :quantity WHERE id = :productId")
+    @Query("UPDATE products SET stockQuantity = CASE WHEN stockQuantity IS NULL THEN 0 ELSE stockQuantity END - :quantity WHERE id = :productId AND :productId > 0")
     suspend fun reduceStock(productId: Long, quantity: Double)
 }
 
