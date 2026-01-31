@@ -213,12 +213,18 @@ class PdfGenerator(private val context: Context) {
 
         pdfDocument.finishPage(page)
 
-        val file = File(context.getExternalFilesDir(null), "${invoice.invoiceNumber}.pdf")
+        val pdfFolder = File(context.getExternalFilesDir(null), "Invoices")
+        if (!pdfFolder.exists()) pdfFolder.mkdirs()
+        val file = File(pdfFolder, "${invoice.invoiceNumber.replace("/", "_")}.pdf")
         return try {
-            pdfDocument.writeTo(FileOutputStream(file))
+            val outputStream = FileOutputStream(file)
+            pdfDocument.writeTo(outputStream)
+            outputStream.flush()
+            outputStream.close()
             pdfDocument.close()
             file
         } catch (e: Exception) {
+            e.printStackTrace()
             pdfDocument.close()
             null
         }

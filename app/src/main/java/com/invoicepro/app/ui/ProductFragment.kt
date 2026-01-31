@@ -73,19 +73,27 @@ class ProductFragment : Fragment() {
             val minStockStr = dialogBinding.editProductMinStock.text.toString()
 
             if (name.isNotEmpty() && priceStr.isNotEmpty()) {
-                val product = Product(
-                    name = name,
-                    sellingPrice = priceStr.toDoubleOrNull() ?: 0.0,
-                    gstPercentage = gstStr.toIntOrNull() ?: 0,
-                    stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
-                    minStockLevel = minStockStr.toDoubleOrNull() ?: 5.0,
-                    unit = "pcs"
-                )
-                lifecycleScope.launch {
-                    val db = AppDatabase.getDatabase(requireContext())
-                    db.productDao().insertProduct(product)
-                    android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
-                    dialog.dismiss()
+                try {
+                    val product = Product(
+                        name = name,
+                        sellingPrice = priceStr.toDoubleOrNull() ?: 0.0,
+                        gstPercentage = gstStr.toIntOrNull() ?: 0,
+                        stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
+                        minStockLevel = minStockStr.toDoubleOrNull() ?: 5.0,
+                        unit = "pcs"
+                    )
+                    lifecycleScope.launch {
+                        try {
+                            val db = AppDatabase.getDatabase(requireContext())
+                            db.productDao().insertProduct(product)
+                            android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                        } catch (e: Exception) {
+                            android.widget.Toast.makeText(requireContext(), "Database Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } catch (e: Exception) {
+                    android.widget.Toast.makeText(requireContext(), "Input Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                 }
             } else {
                 android.widget.Toast.makeText(requireContext(), "Name and Price are required", android.widget.Toast.LENGTH_SHORT).show()
