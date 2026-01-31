@@ -75,6 +75,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "invoice_pro_database"
                 )
                 .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()   // TEMP DEBUG ONLY
                 .build()
                 INSTANCE = instance
                 instance

@@ -90,20 +90,24 @@ class ProductFragment : Fragment() {
                     
                     lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                         try {
+                            android.util.Log.d("PRODUCT_DEBUG", "Starting product save: $product")
                             val db = AppDatabase.getDatabase(requireContext().applicationContext)
                             db.productDao().insertProduct(product)
+                            android.util.Log.d("PRODUCT_DEBUG", "Product saved successfully")
                             
                             launch(kotlinx.coroutines.Dispatchers.Main) {
                                 android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
                                 dialog.dismiss()
                             }
                         } catch (e: Exception) {
+                            android.util.Log.e("DB_ERROR", "Insert Product Failed", e)
                             launch(kotlinx.coroutines.Dispatchers.Main) {
                                 android.widget.Toast.makeText(requireContext(), "Database Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
                 } catch (e: Exception) {
+                    android.util.Log.e("PRODUCT_DEBUG", "Input Error", e)
                     android.widget.Toast.makeText(requireContext(), "Input Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                 }
             } else {

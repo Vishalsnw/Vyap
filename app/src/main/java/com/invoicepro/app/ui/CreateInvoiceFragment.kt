@@ -250,17 +250,36 @@ class CreateInvoiceFragment : Fragment() {
 
             lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                 try {
+                    android.util.Log.d("INVOICE_DEBUG", "Starting invoice save: ${invoice.invoiceNumber}")
                     val db = AppDatabase.getDatabase(requireContext().applicationContext)
-                    val invoiceId = db.invoiceDao().insertInvoice(invoice)
+                    
+                    val invoiceId = try {
+                        val id = db.invoiceDao().insertInvoice(invoice)
+                        android.util.Log.d("INVOICE_DEBUG", "Invoice inserted ID = $id")
+                        id
+                    } catch (e: Exception) {
+                        android.util.Log.e("DB_ERROR", "Insert Invoice Failed", e)
+                        throw e
+                    }
                     
                     val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
                     if (finalItems.isNotEmpty()) {
-                        db.invoiceDao().insertInvoiceItems(finalItems)
+                        try {
+                            db.invoiceDao().insertInvoiceItems(finalItems)
+                            android.util.Log.d("INVOICE_DEBUG", "Items inserted count = ${finalItems.size}")
+                        } catch (e: Exception) {
+                            android.util.Log.e("DB_ERROR", "Insert Invoice Items Failed", e)
+                            throw e
+                        }
                         
                         finalItems.forEach { item ->
                             try {
-                                db.productDao().reduceStock(item.productId, item.quantity)
+                                if (item.productId > 0 && item.quantity > 0) {
+                                    db.productDao().reduceStock(item.productId, item.quantity)
+                                    android.util.Log.d("INVOICE_DEBUG", "Reduced stock for product: ${item.productId}")
+                                }
                             } catch (e: Exception) {
+                                android.util.Log.e("DB_ERROR", "Stock Reduction Failed for product ${item.productId}", e)
                                 // Stock reduction failure shouldn't crash the invoice save
                             }
                         }
@@ -280,6 +299,7 @@ class CreateInvoiceFragment : Fragment() {
                         updateUI()
                     }
                 } catch (e: Exception) {
+                    android.util.Log.e("INVOICE_DEBUG", "Critical Invoice Save Failure", e)
                     launch(kotlinx.coroutines.Dispatchers.Main) {
                         Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
                     }
