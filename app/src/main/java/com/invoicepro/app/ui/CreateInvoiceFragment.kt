@@ -248,9 +248,9 @@ class CreateInvoiceFragment : Fragment() {
                 total = total
             )
 
-            lifecycleScope.launch {
+            lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                 try {
-                    val db = AppDatabase.getDatabase(requireContext())
+                    val db = AppDatabase.getDatabase(requireContext().applicationContext)
                     val invoiceId = db.invoiceDao().insertInvoice(invoice)
                     
                     val finalItems = selectedItems.map { it.copy(invoiceId = invoiceId) }
@@ -266,22 +266,23 @@ class CreateInvoiceFragment : Fragment() {
                         }
                     }
                     
-                    lastGeneratedInvoice = invoice.copy(id = invoiceId)
-                    preferenceManager.incrementInvoiceCount()
-                    
-                    Toast.makeText(requireContext(), "Invoice ${invoice.invoiceNumber} saved successfully!", Toast.LENGTH_SHORT).show()
-                    
-                    // Share immediately after saving to provide better UX and avoid "lastGeneratedInvoice" being null issues
-                    shareInvoice(false)
+                    launch(kotlinx.coroutines.Dispatchers.Main) {
+                        lastGeneratedInvoice = invoice.copy(id = invoiceId)
+                        preferenceManager.incrementInvoiceCount()
+                        
+                        Toast.makeText(requireContext(), "Invoice ${invoice.invoiceNumber} saved successfully!", Toast.LENGTH_SHORT).show()
+                        
+                        // Share immediately after saving to provide better UX and avoid "lastGeneratedInvoice" being null issues
+                        shareInvoice(false)
 
-                    selectedItems.clear()
-                    itemAdapter.notifyDataSetChanged()
-                    updateUI()
-                    
-                    // Navigate back after small delay or after share is initiated
-                    // parentFragmentManager.popBackStack() 
+                        selectedItems.clear()
+                        itemAdapter.notifyDataSetChanged()
+                        updateUI()
+                    }
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
+                    launch(kotlinx.coroutines.Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         } catch (e: Exception) {

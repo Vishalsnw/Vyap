@@ -66,30 +66,41 @@ class ProductFragment : Fragment() {
         dialog.setContentView(dialogBinding.root)
 
         dialogBinding.btnSaveProduct.setOnClickListener {
-            val name = dialogBinding.editProductName.text.toString()
-            val priceStr = dialogBinding.editProductPrice.text.toString()
-            val stockStr = dialogBinding.editProductStock.text.toString()
-            val gstStr = dialogBinding.editProductGst.text.toString()
-            val minStockStr = dialogBinding.editProductMinStock.text.toString()
+            val name = dialogBinding.editProductName.text.toString().trim()
+            val priceStr = dialogBinding.editProductPrice.text.toString().trim()
+            val stockStr = dialogBinding.editProductStock.text.toString().trim()
+            val gstStr = dialogBinding.editProductGst.text.toString().trim()
+            val minStockStr = dialogBinding.editProductMinStock.text.toString().trim()
 
             if (name.isNotEmpty() && priceStr.isNotEmpty()) {
                 try {
+                    val price = priceStr.toDoubleOrNull() ?: 0.0
+                    val stock = stockStr.toDoubleOrNull() ?: 0.0
+                    val gst = gstStr.toIntOrNull() ?: 0
+                    val minStock = minStockStr.toDoubleOrNull() ?: 5.0
+
                     val product = Product(
                         name = name,
-                        sellingPrice = priceStr.toDoubleOrNull() ?: 0.0,
-                        gstPercentage = gstStr.toIntOrNull() ?: 0,
-                        stockQuantity = stockStr.toDoubleOrNull() ?: 0.0,
-                        minStockLevel = minStockStr.toDoubleOrNull() ?: 5.0,
+                        sellingPrice = price,
+                        gstPercentage = gst,
+                        stockQuantity = stock,
+                        minStockLevel = minStock,
                         unit = "pcs"
                     )
-                    lifecycleScope.launch {
+                    
+                    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                         try {
-                            val db = AppDatabase.getDatabase(requireContext())
+                            val db = AppDatabase.getDatabase(requireContext().applicationContext)
                             db.productDao().insertProduct(product)
-                            android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
-                            dialog.dismiss()
+                            
+                            launch(kotlinx.coroutines.Dispatchers.Main) {
+                                android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
+                                dialog.dismiss()
+                            }
                         } catch (e: Exception) {
-                            android.widget.Toast.makeText(requireContext(), "Database Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                            launch(kotlinx.coroutines.Dispatchers.Main) {
+                                android.widget.Toast.makeText(requireContext(), "Database Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 } catch (e: Exception) {
