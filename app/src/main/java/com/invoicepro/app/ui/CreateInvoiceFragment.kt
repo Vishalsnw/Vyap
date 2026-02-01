@@ -67,10 +67,19 @@ class CreateInvoiceFragment : Fragment() {
             // On Android 13+, we don't need WRITE_EXTERNAL_STORAGE for app-specific directories.
             // We just need to ensure the FileProvider and folder creation logic is sound.
         } else {
-            requestPermissionLauncher.launch(arrayOf(
+            val permissions = arrayOf(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ))
+            )
+            
+            val allGranted = permissions.all {
+                androidx.core.content.ContextCompat.checkSelfPermission(requireContext(), it) == 
+                android.content.pm.PackageManager.PERMISSION_GRANTED
+            }
+            
+            if (!allGranted) {
+                requestPermissionLauncher.launch(permissions)
+            }
         }
     }
 
