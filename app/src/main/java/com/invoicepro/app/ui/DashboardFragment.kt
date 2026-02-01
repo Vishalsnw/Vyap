@@ -67,7 +67,7 @@ class DashboardFragment : Fragment() {
                     if (sortedDates.isNotEmpty()) {
                         val lastDates = sortedDates.takeLast(5)
                         binding.textChartPlaceholder.text = "Recent Sales: " + lastDates.joinToString { date -> 
-                            "$date: ₹${salesByDate[date]?.toInt() ?: 0}" 
+                            "$date: ₹${salesByDate[date]?.toLong() ?: 0}" 
                         }
                     } else {
                         binding.textChartPlaceholder.text = "No sales data available yet"
