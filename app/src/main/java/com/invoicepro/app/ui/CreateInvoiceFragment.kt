@@ -83,7 +83,7 @@ class CreateInvoiceFragment : Fragment() {
             return
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val db = AppDatabase.getDatabase(requireContext())
                 val business = db.businessProfileDao().getProfile() ?: BusinessProfile(
@@ -92,6 +92,8 @@ class CreateInvoiceFragment : Fragment() {
                     phone = "1234567890",
                     gstin = ""
                 )
+
+                if (!isAdded || view == null) return@launch
 
                 val invoice = lastGeneratedInvoice ?: Invoice(
                     invoiceNumber = "DRAFT-${System.currentTimeMillis()}",
@@ -136,11 +138,11 @@ class CreateInvoiceFragment : Fragment() {
     }
 
     private fun showProductSelectionDialog() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
             val products = db.productDao().getAllProducts().first()
             
-            if (products.isEmpty()) {
+            if (!isAdded || view == null) return@launch
                 Toast.makeText(requireContext(), "Please add products first", Toast.LENGTH_SHORT).show()
                 return@launch
             }
@@ -202,9 +204,10 @@ class CreateInvoiceFragment : Fragment() {
     }
 
     private fun setupCustomerSelector() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
             val customers = db.customerDao().getAllCustomers().first()
+            if (!isAdded || view == null) return@launch
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, customers.map { it.name })
             binding.spinnerCustomer.adapter = adapter
             binding.spinnerCustomer.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -248,7 +251,7 @@ class CreateInvoiceFragment : Fragment() {
                 total = total
             )
 
-            lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            viewLifecycleOwner.lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                 try {
                     android.util.Log.d("INVOICE_DEBUG", "Starting invoice save: ${invoice.invoiceNumber}")
                     val db = AppDatabase.getDatabase(requireContext().applicationContext)
@@ -286,6 +289,7 @@ class CreateInvoiceFragment : Fragment() {
                     }
                     
                     launch(kotlinx.coroutines.Dispatchers.Main) {
+                        if (!isAdded || view == null) return@launch
                         lastGeneratedInvoice = invoice.copy(id = invoiceId)
                         preferenceManager.incrementInvoiceCount()
                         
@@ -301,6 +305,7 @@ class CreateInvoiceFragment : Fragment() {
                 } catch (e: Exception) {
                     android.util.Log.e("INVOICE_DEBUG", "Critical Invoice Save Failure", e)
                     launch(kotlinx.coroutines.Dispatchers.Main) {
+                        if (!isAdded || view == null) return@launch
                         Toast.makeText(requireContext(), "Error saving invoice: ${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }

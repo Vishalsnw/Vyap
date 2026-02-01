@@ -33,9 +33,10 @@ class ProductFragment : Fragment() {
         binding.recyclerViewProducts.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewProducts.adapter = adapter
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             val db = AppDatabase.getDatabase(requireContext())
             db.productDao().getAllProducts().collectLatest { products ->
+                if (!isAdded || view == null) return@collectLatest
                 allProducts = products
                 updateStockSummary(products)
                 filterProducts(binding.editSearchProducts.text.toString())
@@ -88,18 +89,20 @@ class ProductFragment : Fragment() {
                         unit = "pcs"
                     )
                     
-                    lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                    viewLifecycleOwner.lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                         try {
                             val db = AppDatabase.getDatabase(requireContext().applicationContext)
                             db.productDao().insertProduct(product)
                             
                             launch(kotlinx.coroutines.Dispatchers.Main) {
+                                if (!isAdded || view == null) return@launch
                                 android.widget.Toast.makeText(requireContext(), "Product Saved!", android.widget.Toast.LENGTH_SHORT).show()
                                 dialog.dismiss()
                             }
                         } catch (e: Exception) {
                             android.util.Log.e("PRODUCT_SAVE_ERROR", "Failed to save product", e)
                             launch(kotlinx.coroutines.Dispatchers.Main) {
+                                if (!isAdded || view == null) return@launch
                                 android.widget.Toast.makeText(requireContext(), "Database Error: ${e.message}", android.widget.Toast.LENGTH_SHORT).show()
                             }
                         }
@@ -155,9 +158,13 @@ class ProductFragment : Fragment() {
                     .setTitle("Delete Product")
                     .setMessage("Are you sure you want to delete ${product.name}?")
                     .setPositiveButton("Delete") { _, _ ->
-                        lifecycleScope.launch {
-                            val db = AppDatabase.getDatabase(holder.itemView.context)
-                            db.productDao().deleteProduct(product)
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            try {
+                                val db = AppDatabase.getDatabase(holder.itemView.context)
+                                db.productDao().deleteProduct(product)
+                            } catch (e: Exception) {
+                                android.util.Log.e("PRODUCT_DELETE_ERROR", "Failed to delete product", e)
+                            }
                         }
                     }
                     .setNegativeButton("Cancel", null)
