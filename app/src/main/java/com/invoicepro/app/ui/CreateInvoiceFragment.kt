@@ -51,8 +51,32 @@ class CreateInvoiceFragment : Fragment() {
         return binding.root
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions.entries.all { it.value }
+        if (granted) {
+            // Permission granted, you can proceed if needed
+        } else {
+            Toast.makeText(requireContext(), "Permissions required for PDF and sharing", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun checkPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            // On Android 13+, we don't need WRITE_EXTERNAL_STORAGE for app-specific directories.
+            // We just need to ensure the FileProvider and folder creation logic is sound.
+        } else {
+            requestPermissionLauncher.launch(arrayOf(
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ))
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkPermissions()
         setupCustomerSelector()
         setupRecyclerView()
         
