@@ -56,7 +56,7 @@ interface BusinessProfileDao {
     suspend fun insertProfile(profile: BusinessProfile)
 }
 
-@Database(entities = [Customer::class, Product::class, Invoice::class, InvoiceItem::class, BusinessProfile::class], version = 4, exportSchema = false)
+@Database(entities = [Customer::class, Product::class, Invoice::class, InvoiceItem::class, BusinessProfile::class], version = 5, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun productDao(): ProductDao

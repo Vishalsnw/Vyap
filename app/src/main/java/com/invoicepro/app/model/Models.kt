@@ -26,7 +26,7 @@ data class Product(
 
 @Entity(tableName = "invoice_items")
 data class InvoiceItem(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
     val invoiceId: Long,
     val productId: Long,
     val productName: String,
