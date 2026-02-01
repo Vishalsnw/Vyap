@@ -139,62 +139,68 @@ class CreateInvoiceFragment : Fragment() {
 
     private fun showProductSelectionDialog() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val db = AppDatabase.getDatabase(requireContext())
-            val products = db.productDao().getAllProducts().first()
-            
-            if (!isAdded || view == null) return@launch
-                Toast.makeText(requireContext(), "Please add products first", Toast.LENGTH_SHORT).show()
-                return@launch
-            }
+            try {
+                val db = AppDatabase.getDatabase(requireContext())
+                val products = db.productDao().getAllProducts().first()
 
-            val dialogBinding = DialogAddProductBinding.inflate(layoutInflater)
-            val dialog = Dialog(requireContext())
-            dialog.setContentView(dialogBinding.root)
-            
-            val productNames = products.map { "${it.name} (₹${it.sellingPrice})" }
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, productNames)
-            dialogBinding.spinnerProductSelect.adapter = adapter
-            
-            var selectedProduct: Product = products[0]
-            dialogBinding.spinnerProductSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    selectedProduct = products[position]
-                    dialogBinding.editItemRate.setText(selectedProduct.sellingPrice.toString())
+                if (!isAdded || view == null) return@launch
+
+                if (products.isEmpty()) {
+                    Toast.makeText(requireContext(), "Please add products first", Toast.LENGTH_SHORT).show()
+                    return@launch
                 }
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
 
-            dialogBinding.btnConfirmAdd.setOnClickListener {
-                try {
-                    val qtyStr = dialogBinding.editItemQty.text.toString()
-                    val rateStr = dialogBinding.editItemRate.text.toString()
-                    
-                    val qty = qtyStr.toDoubleOrNull() ?: 1.0
-                    val rate = rateStr.toDoubleOrNull() ?: selectedProduct.sellingPrice
-                    
-                    val amount = qty * rate * (1 + selectedProduct.gstPercentage / 100.0)
-                    
-                    val item = InvoiceItem(
-                        invoiceId = 0,
-                        productId = selectedProduct.id,
-                        productName = selectedProduct.name,
-                        quantity = qty,
-                        rate = rate,
-                        gstPercentage = selectedProduct.gstPercentage,
-                        amount = amount
-                    )
-                    
-                    selectedItems.add(item)
-                    itemAdapter.notifyItemInserted(selectedItems.size - 1)
-                    updateUI()
-                    dialog.dismiss()
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Error adding item: ${e.message}", Toast.LENGTH_SHORT).show()
+                val dialogBinding = DialogAddProductBinding.inflate(layoutInflater)
+                val dialog = Dialog(requireContext())
+                dialog.setContentView(dialogBinding.root)
+
+                val productNames = products.map { "${it.name} (₹${it.sellingPrice})" }
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, productNames)
+                dialogBinding.spinnerProductSelect.adapter = adapter
+
+                var selectedProduct: Product = products[0]
+                dialogBinding.spinnerProductSelect.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        selectedProduct = products[position]
+                        dialogBinding.editItemRate.setText(selectedProduct.sellingPrice.toString())
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
                 }
-            }
 
-            dialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-            dialog.show()
+                dialogBinding.btnConfirmAdd.setOnClickListener {
+                    try {
+                        val qtyStr = dialogBinding.editItemQty.text.toString()
+                        val rateStr = dialogBinding.editItemRate.text.toString()
+
+                        val qty = qtyStr.toDoubleOrNull() ?: 1.0
+                        val rate = rateStr.toDoubleOrNull() ?: selectedProduct.sellingPrice
+
+                        val amount = qty * rate * (1 + selectedProduct.gstPercentage / 100.0)
+
+                        val item = InvoiceItem(
+                            invoiceId = 0,
+                            productId = selectedProduct.id,
+                            productName = selectedProduct.name,
+                            quantity = qty,
+                            rate = rate,
+                            gstPercentage = selectedProduct.gstPercentage,
+                            amount = amount
+                        )
+
+                        selectedItems.add(item)
+                        itemAdapter.notifyItemInserted(selectedItems.size - 1)
+                        updateUI()
+                        dialog.dismiss()
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), "Error adding item: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                dialog.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+                dialog.show()
+            } catch (e: Exception) {
+                android.util.Log.e("INVOICE_DEBUG", "Error showing product dialog", e)
+            }
         }
     }
 
