@@ -42,7 +42,8 @@ class CreateInvoiceFragment : Fragment() {
     private lateinit var preferenceManager: PreferenceManager
     private var selectedCustomer: Customer? = null
     private val selectedItems = mutableListOf<InvoiceItem>()
-    private lateinit var itemAdapter: SelectedItemAdapter
+    private var _itemAdapter: SelectedItemAdapter? = null
+    private val itemAdapter get() = _itemAdapter
     private var lastGeneratedInvoice: Invoice? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -163,7 +164,7 @@ class CreateInvoiceFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        itemAdapter = SelectedItemAdapter(selectedItems) {
+        _itemAdapter = SelectedItemAdapter(selectedItems) {
             updateUI()
         }
         binding.recyclerItems.layoutManager = LinearLayoutManager(requireContext())
@@ -221,7 +222,7 @@ class CreateInvoiceFragment : Fragment() {
                         )
 
                         selectedItems.add(item)
-                        itemAdapter.notifyItemInserted(selectedItems.size - 1)
+                        itemAdapter?.notifyItemInserted(selectedItems.size - 1)
                         updateUI()
                         dialog.dismiss()
                     } catch (e: Exception) {
@@ -338,7 +339,7 @@ class CreateInvoiceFragment : Fragment() {
                         shareInvoice(false)
 
                         selectedItems.clear()
-                        itemAdapter.notifyDataSetChanged()
+                        itemAdapter?.notifyDataSetChanged()
                         updateUI()
                     }
                 } catch (e: Exception) {
@@ -356,6 +357,7 @@ class CreateInvoiceFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _itemAdapter = null
         _binding = null
     }
 

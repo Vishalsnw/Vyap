@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 class ProductFragment : Fragment() {
     private var _binding: FragmentProductBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: ProductAdapter
+    private var _adapter: ProductAdapter? = null
+    private val adapter get() = _adapter
     private var allProducts = listOf<Product>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -29,7 +30,7 @@ class ProductFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        adapter = ProductAdapter()
+        _adapter = ProductAdapter()
         binding.recyclerViewProducts.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewProducts.adapter = adapter
 
@@ -124,7 +125,7 @@ class ProductFragment : Fragment() {
         } else {
             allProducts.filter { it.name.contains(query, ignoreCase = true) }
         }
-        adapter.submitList(filtered)
+        adapter?.submitList(filtered)
     }
 
     private inner class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
@@ -180,6 +181,7 @@ class ProductFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _adapter = null
         _binding = null
     }
 }
